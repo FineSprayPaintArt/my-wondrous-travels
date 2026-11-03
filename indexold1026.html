@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aerosol Atmospheric Realism | My Wondrous Travels</title>
+  <style>
+    :root {
+      --bg: #010103;
+      --text: #eaeaf2;
+      --muted: #75757e;
+      --accent: #569cd6;
+      --glow: rgba(86, 156, 214, 0.4);
+      
+      --accent-blue: #569cd6;
+      --glow-blue: rgba(86, 156, 214, 0.7);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: radial-gradient(circle at center, #0e0e12 0%, var(--bg) 70%);
+      color: var(--text);
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(255, 255, 255, 0.02),
+        rgba(255, 255, 255, 0.02) 1px,
+        transparent 1px,
+        transparent 4px
+      );
+      pointer-events: none;
+      z-index: 99;
+    }
+
+    /* MINIMALIST FLOATING NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 28px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      mix-blend-mode: difference;
+    }
+    .brand-mark {
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: #fff;
+    }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+    }
+    .nav-links a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      opacity: 0.85;
+      transition: all 0.3s ease;
+    }
+    .nav-links a:hover { 
+      opacity: 1; 
+      color: var(--accent-blue);
+      text-shadow: 0 0 12px var(--glow-blue);
+    }
+
+    /* HERO: FULL-BLEED NOIR STUDIO VIDEO */
+    .hero {
+      position: relative;
+      height: 100vh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 24px;
+      overflow: hidden;
+      background: #0a0a0c;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, transparent 40%, rgba(1,1,3,0.95) 95%);
+      z-index: 2;
+      pointer-events: none;
+    }
+    .hero-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.55;
+      filter: contrast(1.2) saturate(1.05);
+      z-index: 1;
+    }
+    .hero-fallback {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(3,3,5,0.2), rgba(3,3,5,0.8), rgba(3,3,5,0.95)),
+                  url('number 8.jpg') center/cover no-repeat;
+      filter: blur(6px) scale(1.05);
+      z-index: 0;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 3;
+      max-width: 1100px;
+    }
+    .hero h1 {
+      font-size: clamp(2.8rem, 7vw, 6.2rem);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -2px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      color: #ffffff;
+      text-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    }
+    .hero p {
+      font-size: clamp(1rem, 1.6vw, 1.35rem);
+      color: #c5c5d0;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.5;
+      letter-spacing: 0.5px;
+    }
+    .scroll-indicator {
+      position: absolute;
+      bottom: 36px;
+      z-index: 3;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: #fff;
+      text-decoration: none;
+      opacity: 0.7;
+      transition: all 0.2s;
+    }
+    .scroll-indicator:hover { 
+      opacity: 1; 
+      color: var(--accent-blue);
+      text-shadow: 0 0 10px var(--glow-blue);
+    }
+
+    /* FULL-SCREEN VERTICAL COLLECTION STREAM */
+    .work-section {
+      position: relative;
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      padding: 100px 60px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      background: linear-gradient(180deg, #07070a 0%, #010103 100%);
+    }
+    @media (max-width: 768px) {
+      nav { padding: 20px 24px; }
+      .work-section { padding: 80px 20px; min-height: auto; }
+    }
+    .work-Split {
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 60px;
+      align-items: center;
+      z-index: 2;
+    }
+    @media (max-width: 960px) {
+      .work-Split { grid-template-columns: 1fr; gap: 40px; }
+    }
+    
+    /* VIEWPORT-CONSTRAINED ARTWORK FRAME (Trimmed for tall Lakeshore panels) */
+    .artwork-frame {
+      background: #09090c;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 35px 80px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.03) inset;
+      transition: border-color 0.4s ease, box-shadow 0.4s ease;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      border-radius: 4px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .artwork-frame:hover {
+      border-color: var(--accent-blue);
+      box-shadow: 0 50px 100px rgba(0,0,0,0.95), 0 0 45px 8px var(--glow-blue);
+    }
+
+    /* ERMINANDO ALIAJ REVERSE-ENGINEERED PARALLAX SCREEN */
+    .artwork-image-container {
+      width: 100%;
+      height: 62vh;
+      max-height: 600px;
+      min-height: 380px;
+      background: #040406;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    /* Interactive cursor indicator */
+    .hover-hint {
+      position: absolute;
+      bottom: 14px;
+      right: 18px;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,0.4);
+      pointer-events: none;
+      z-index: 10;
+      transition: opacity 0.3s ease;
+    }
+    .artwork-frame:hover .hover-hint {
+      opacity: 0.9;
+      color: var(--accent-blue);
+    }
+
+    .artwork-image-container .view-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.92) translate3d(0, 16px, 0);
+      transition: opacity 0.75s cubic-bezier(0.19, 1, 0.22, 1),
+                  transform 0.85s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+    .artwork-image-container .view-layer.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1) translate3d(0, 0, 0);
+      z-index: 2;
+    }
+    .artwork-image-container .view-layer.outgoing {
+      opacity: 0;
+      transform: scale(1.06) translate3d(0, -14px, 0);
+      z-index: 1;
+    }
+    .artwork-image-container .view-layer img {
+      max-height: 100%;
+      max-width: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.7);
+      transition: transform 0.85s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+    .artwork-image-container .view-layer.active img {
+      transform: scale(1);
+    }
+    .artwork-image-container .view-layer.outgoing img {
+      transform: scale(1.08);
+    }
+
+    /* EDITORIAL SLIDESHOW DECK */
+    .evolution-deck {
+      background: #0b0b0f;
+      padding: 16px 22px 20px 22px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      position: relative;
+      z-index: 3;
+    }
+    .evolution-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      color: var(--muted);
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+    .stage-indicator {
+      color: var(--accent-blue);
+      text-shadow: 0 0 8px var(--glow-blue);
+      transition: all 0.3s ease;
+    }
+
+    /* HORIZONTAL FILMSTRIP SCROLL */
+    .evolution-filmstrip {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      padding: 10px 6px 14px 6px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--accent-blue) rgba(255,255,255,0.05);
+    }
+    .evolution-filmstrip::-webkit-scrollbar {
+      height: 4px;
+    }
+    .evolution-filmstrip::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.05);
+      border-radius: 2px;
+    }
+    .evolution-filmstrip::-webkit-scrollbar-thumb {
+      background: var(--accent-blue);
+      border-radius: 2px;
+    }
+
+    /* ROTATING TACTILE THUMBNAILS */
+    .filmstrip-item {
+      flex: 0 0 76px;
+      height: 76px;
+      background: #141418;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 2px;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      transform: rotate(var(--rot, 0deg));
+      transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), 
+                  border-color 0.3s ease, 
+                  box-shadow 0.4s ease;
+    }
+    .filmstrip-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: brightness(0.8) contrast(1.05);
+      transition: filter 0.3s ease, transform 0.4s ease;
+    }
+    .filmstrip-item:hover {
+      transform: scale(1.18) rotate(0deg) translateY(-5px);
+      border-color: var(--accent-blue);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.85), 0 0 20px var(--glow-blue);
+      z-index: 10;
+    }
+    .filmstrip-item:hover img {
+      filter: brightness(1.1) contrast(1.1);
+      transform: scale(1.05);
+    }
+    .filmstrip-item.active-thumb {
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 20px 3px var(--glow-blue);
+      transform: scale(1.08) rotate(0deg);
+    }
+    .filmstrip-item.active-thumb img {
+      filter: brightness(1) contrast(1);
+    }
+
+    /* EDITORIAL TYPOGRAPHY BLOCK */
+    .editorial-copy .index-tag {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+      transition: all 0.3s ease;
+    }
+    .editorial-copy:hover .index-tag {
+      color: var(--accent-blue);
+      text-shadow: 0 0 12px var(--glow-blue);
+    }
+    .editorial-copy h2 {
+      font-size: clamp(2.2rem, 4.2vw, 3.8rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -1px;
+      line-height: 1.02;
+      margin-bottom: 16px;
+      color: #ffffff;
+    }
+    .editorial-copy .hook-line {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #eaeaf2;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      margin-bottom: 24px;
+    }
+    .editorial-copy p {
+      color: #9e9ea8;
+      font-size: 1.02rem;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    .final-specs {
+      margin-top: 26px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #d0d0dc;
+    }
+    .cta-row {
+      display: flex;
+      gap: 16px;
+      margin-top: 32px;
+      flex-wrap: wrap;
+    }
+    
+    /* MAGNETIC BUTTON EFFECTS */
+    .btn-gsp {
+      padding: 16px 30px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      text-decoration: none;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+    .btn-solid {
+      background: #ffffff;
+      color: #000000;
+    }
+    .btn-solid:hover {
+      background: var(--accent-blue);
+      color: #000000;
+      box-shadow: 0 0 35px 5px var(--glow-blue);
+      transform: translateY(-2px);
+    }
+    .btn-ghost {
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #ffffff;
+      background: transparent;
+    }
+    .btn-ghost:hover {
+      border-color: var(--accent-blue);
+      background: rgba(86, 156, 214, 0.08);
+      color: var(--accent-blue);
+      box-shadow: 0 0 25px 3px var(--glow-blue);
+      transform: translateY(-2px);
+    }
+
+    /* ARCHITECTURAL FOOTER */
+    footer {
+      padding: 80px 60px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 40px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      background: #020204;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- MINIMALIST FLOATING HEADER -->
+  <nav>
+    <a href="index.html" class="brand-mark">My Wondrous Travels</a>
+    <div class="nav-links">
+      <a href="index.html" style="color: var(--accent-blue);">Collection</a>
+      <a href="virtual-gallery.html">Virtual Gallery</a>
+      <a href="journal.html">Studio Journal</a>
+      <a href="exhibitions.html">Exhibitions</a>
+      <a href="https://www.saatchiart.com/finespraypaintart" target="_blank">Saatchi Store</a>
+    </div>
+  </nav>
+
+  <!-- HERO: STYLIZED STUDIO VIDEO -->
+  <header class="hero">
+    <div class="hero-fallback"></div>
+    <video class="hero-video" autoplay muted loop playsinline preload="auto">
+      <source src="studio-table.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+
+    <div class="hero-content">
+      <h1>Spraying it til you see it.</h1>
+      <p>
+        Pioneering atmospheric realism entirely with cans of spray paint.
+      </p>
+    </div>
+
+    <a href="#piece-07" class="scroll-indicator">Scroll Collection ↓</a>
+  </header>
+
+  <main id="works">
+
+    <!-- WORK 07: FANTASY LORAIN -->
+    <section class="work-section" id="piece-07">
+      <div class="work-Split">
+        <div class="artwork-frame" id="lorainFrame">
+          <!-- Double-Buffered Viewport -->
+          <div class="artwork-image-container" id="lorainCanvas">
+            <div class="view-layer active">
+              <img src="Number 15.jpg" alt="Fantasy Lorain Final">
+            </div>
+            <div class="view-layer">
+              <img src="Number 15.jpg" alt="Fantasy Lorain Buffer">
+            </div>
+            <div class="hover-hint">Hover to scrub deck • Click to advance</div>
+          </div>
+          <div class="evolution-deck">
+            <div class="evolution-header">
+              <span>Studio Evolution Deck</span>
+              <span id="lorainStageText" class="stage-indicator">Final Image (Session 7)</span>
+            </div>
+            <div class="evolution-filmstrip" id="lorainFilmstrip">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <div class="editorial-copy">
+          <div class="index-tag">Work 07 • My Wondrous Travels Collection</div>
+          <h2>Fantasy Lorain</h2>
+          <div class="hook-line">Where Great Lakes Vapor Meets Romantic Glazing.</div>
+          <p>
+            Painted from an original vision captured along the shores of Lorain, Ohio. Diffused aerosol mist replicates the heavy gold and violet humidity of the Lake Erie shoreline without a single bristle touching the panel.
+          </p>
+          <div class="final-specs">
+            Custom Framing Available
+          </div>
+          <div class="cta-row">
+            <a href="https://www.saatchiart.com/finespraypaintart" target="_blank" class="btn-gsp btn-solid">Acquire Prints</a>
+            <a href="mailto:finespraypaintart@gmail.com?subject=Inquire%20About%20Original%20-%20Fantasy%20Lorain" class="btn-gsp btn-ghost">Inquire about original</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORK 08: PASTORAL PAREIDOLIA -->
+    <section class="work-section" id="piece-08">
+      <div class="work-Split">
+        <div class="artwork-frame" id="barnFrame">
+          <!-- Double-Buffered Viewport -->
+          <div class="artwork-image-container" id="barnCanvas">
+            <div class="view-layer active">
+              <img src="number 17.jpg" alt="Pastoral Pareidolia Final">
+            </div>
+            <div class="view-layer">
+              <img src="number 17.jpg" alt="Pastoral Pareidolia Buffer">
+            </div>
+            <div class="hover-hint">Hover to scrub deck • Click to advance</div>
+          </div>
+          <div class="evolution-deck">
+            <div class="evolution-header">
+              <span>Studio Evolution Deck</span>
+              <span id="barnStageText" class="stage-indicator">Latest Pass (Session 9)</span>
+            </div>
+            <div class="evolution-filmstrip" id="barnFilmstrip">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <div class="editorial-copy">
+          <div class="index-tag">Work 08 • My Wondrous Travels Collection</div>
+          <h2>Pastoral Pareidolia</h2>
+          <div class="hook-line">Phew! A Barn... Right?</div>
+          <p>
+            Critics often ask for something "relatable"—a white picket fence, a cat, a BARN in a field. Look closer: there are no doors, no windows, and no timber. Nope, it's just an alien environment exploiting your need for comfort in an alien environment by chance. :P
+          </p>
+          <div class="final-specs">
+            Custom Framing Available
+          </div>
+          <div class="cta-row">
+            <a href="https://www.saatchiart.com/finespraypaintart" target="_blank" class="btn-gsp btn-solid">Acquire Prints</a>
+            <a href="mailto:finespraypaintart@gmail.com?subject=Inquire%20About%20Original%20-%20Pastoral%20Pareidolia" class="btn-gsp btn-ghost">Inquire about original</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORK 09: HARBOR SENTINEL (IN PROGRESS) -->
+    <section class="work-section" id="piece-09">
+      <div class="work-Split">
+        <div class="artwork-frame">
+          <div class="artwork-image-container">
+            <div class="view-layer active">
+              <img src="Lorain Harbor Light House.jpg" alt="Upcoming 18x48 Lighthouse Reference" style="filter: grayscale(30%) contrast(1.1);">
+            </div>
+          </div>
+        </div>
+
+        <div class="editorial-copy">
+          <div class="index-tag">Work 09 • My Wondrous Travels Collection</div>
+          <h2>Harbor Sentinel (In Progress)</h2>
+          <div class="hook-line">18" × 48" Panoramic Wood Panel.</div>
+          <p>
+            Reimagining the iconic Lorain Harbor Lighthouse in a custom atmospheric palette across a four-foot cinematic wood panel. Currently entering the studio queue.
+          </p>
+          <div class="final-specs">
+            Custom Framing Available
+          </div>
+          <div class="cta-row">
+            <a href="mailto:finespraypaintart@gmail.com?subject=Reserve%2018x48%20Lighthouse%20Piece" class="btn-gsp btn-solid">Reserve Collector Preview</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="inquire">
+    <div>My Wondrous Travels • Created on the Shore of Lake Erie, Ohio</div>
+    <div>100% Aerosol Mist • No Brushes</div>
+  </footer>
+
+  <script>
+    const lorainPhotos = [
+      { src: "Number 9.jpg", label: "Session 1" },
+      { src: "Number 10.jpg", label: "Session 2" },
+      { src: "Number 11.jpg", label: "Session 3" },
+      { src: "Number 12.jpg", label: "Session 4" },
+      { src: "Number 13.jpg", label: "Session 5" },
+      { src: "Number 14.jpg", label: "Session 6" },
+      { src: "Number 15.jpg", label: "Final Image (Session 7)" }
+    ];
+
+    const barnPhotos = [
+      { src: "number 1.jpg", label: "Session 1" },
+      { src: "Number 2.jpg", label: "Session 2" },
+      { src: "number 3.jpg", label: "Session 3" },
+      { src: "number 4.jpg", label: "Session 4" },
+      { src: "number 5.jpg", label: "Session 5" },
+      { src: "number 6.jpg", label: "Session 6" },
+      { src: "number 7.jpg", label: "Session 7" },
+      { src: "number 8.jpg", label: "Session 8" },
+      { src: "number 17.jpg", label: "Latest Pass (Session 9)" }
+    ];
+
+    // Core Reverse-Engineered Slide Transition (Scale-Down and Counter-Pan Parallax)
+    function triggerSlideTransition(canvasElement, labelElement, stageData, targetThumb, filmstripContainer) {
+      if (targetThumb.classList.contains('active-thumb')) return;
+
+      // Update thumbnail active states
+      filmstripContainer.querySelectorAll('.filmstrip-item').forEach(el => el.classList.remove('active-thumb'));
+      targetThumb.classList.add('active-thumb');
+
+      // Keep active thumbnail centered in filmstrip view
+      targetThumb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+
+      // Update caption indicator
+      labelElement.textContent = stageData.label;
+
+      const layers = canvasElement.querySelectorAll('.view-layer');
+      const currentActive = canvasElement.querySelector('.view-layer.active');
+      const incomingLayer = layers[0] === currentActive ? layers[1] : layers[0];
+
+      // Stage incoming asset
+      const incomingImg = incomingLayer.querySelector('img');
+      incomingImg.src = stageData.src;
+      incomingImg.alt = stageData.label;
+
+      // Reverse-engineered Erminando Aliaj parallax timing
+      currentActive.classList.remove('active');
+      currentActive.classList.add('outgoing');
+
+      incomingLayer.classList.remove('outgoing');
+      incomingLayer.classList.add('active');
+
+      setTimeout(() => {
+        currentActive.classList.remove('outgoing');
+      }, 850);
+    }
+
+    // Attach Controller with Hover-Scrubbing and Direct Click Handlers
+    function setupController({ frameId, canvasId, filmstripId, labelId, photos, initialIndex }) {
+      const frame = document.getElementById(frameId);
+      const canvas = document.getElementById(canvasId);
+      const filmstrip = document.getElementById(filmstripId);
+      const labelText = document.getElementById(labelId);
+      const angles = [-3.8, 2.4, -2.6, 3.2, -1.9, 2.8, -3.1, 1.8, -2.2];
+
+      let currentIndex = initialIndex;
+      let hoverScrubTimer = null;
+      const thumbElements = [];
+
+      // Build editorial deck
+      photos.forEach((stage, idx) => {
+        const item = document.createElement('div');
+        item.className = 'filmstrip-item';
+        const rot = angles[idx % angles.length];
+        item.style.setProperty('--rot', `${rot}deg`);
+
+        if (idx === initialIndex) {
+          item.classList.add('active-thumb');
+        }
+
+        item.innerHTML = `<img src="${stage.src}" alt="${stage.label}">`;
+
+        // Direct click on thumbnail
+        item.addEventListener('click', (e) => {
+          e.stopPropagation();
+          currentIndex = idx;
+          triggerSlideTransition(canvas, labelText, photos[currentIndex], item, filmstrip);
+        });
+
+        filmstrip.appendChild(item);
+        thumbElements.push(item);
+      });
+
+      // Advance deck by one step
+      function stepNext() {
+        currentIndex = (currentIndex + 1) % photos.length;
+        triggerSlideTransition(canvas, labelText, photos[currentIndex], thumbElements[currentIndex], filmstrip);
+      }
+
+      // 1. Click main frame to transition to next stage
+      frame.addEventListener('click', () => {
+        stepNext();
+      });
+
+      // 2. Hover over image: automatically cycles through the deck like a contact sheet
+      canvas.addEventListener('mouseenter', () => {
+        clearInterval(hoverScrubTimer);
+        hoverScrubTimer = setInterval(() => {
+          stepNext();
+        }, 850); // Steady slideshow loop speed
+      });
+
+      // 3. Hover out: stops cycling and leaves active slide locked in place
+      canvas.addEventListener('mouseleave', () => {
+        clearInterval(hoverScrubTimer);
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      setupController({
+        frameId: 'lorainFrame',
+        canvasId: 'lorainCanvas',
+        filmstripId: 'lorainFilmstrip',
+        labelId: 'lorainStageText',
+        photos: lorainPhotos,
+        initialIndex: 6
+      });
+
+      setupController({
+        frameId: 'barnFrame',
+        canvasId: 'barnCanvas',
+        filmstripId: 'barnFilmstrip',
+        labelId: 'barnStageText',
+        photos: barnPhotos,
+        initialIndex: 8
+      });
+    });
+  </script>
+
+</body>
+</html>

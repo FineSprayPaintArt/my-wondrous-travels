@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Gallery | My Wondrous Travels</title>
+    <style>
+        :root {
+            --bg: #010103;
+            --panel-bg: rgba(14, 14, 18, 0.65);
+            --text: #eaeaf2;
+            --muted: #95959e;
+            --accent: #569cd6;
+            --glow: rgba(86, 156, 214, 0.4);
+            
+            --accent-blue: #569cd6;
+            --glow-blue: rgba(86, 156, 214, 0.7);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: radial-gradient(circle at center, #0e0e12 0%, var(--bg) 70%);
+            color: var(--text);
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(255, 255, 255, 0.02),
+                rgba(255, 255, 255, 0.02) 1px,
+                transparent 1px,
+                transparent 4px
+            );
+            pointer-events: none;
+            z-index: 99;
+        }
+
+        /* Nav matching index.html */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 28px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: rgba(1, 1, 3, 0.75);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .brand-mark {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: #fff;
+        }
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.85;
+            transition: all 0.3s ease;
+        }
+        .nav-links a:hover { 
+            opacity: 1; 
+            color: var(--accent-blue);
+            text-shadow: 0 0 12px var(--glow-blue);
+        }
+
+        /* Page Layout */
+        .gallery-container {
+            max-width: 1440px;
+            margin: 130px auto 40px auto;
+            padding: 0 48px;
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 10;
+        }
+
+        .gallery-header {
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .gallery-header-text h1 {
+            font-size: clamp(2rem, 3.8vw, 3.2rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+        .gallery-header-text p {
+            color: var(--muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* 3D Stage Card */
+        .stage-wrapper {
+            position: relative;
+            width: 100%;
+            overflow: visible;
+        }
+
+        /* Signature Spiral Cascade (Top-Right) */
+        .spiral-cascade-container {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            top: -24px;
+            right: -24px;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .cascade-layer {
+            position: absolute;
+            inset: 0;
+            border: 1px solid rgba(86, 156, 214, 0.4);
+            background: linear-gradient(135deg, rgba(86, 156, 214, 0.16), transparent 75%);
+            box-shadow: 0 0 20px rgba(86, 156, 214, 0.4);
+            border-radius: 2px;
+            transform-origin: center center;
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease, box-shadow 0.5s ease;
+        }
+        .cascade-layer.l1 {
+            transform: scale(1) rotate(45deg);
+            opacity: 0.95;
+            z-index: 2;
+        }
+        .cascade-layer.l2 {
+            transform: translate3d(18px, -14px, 0) scale(0.78) rotate(58deg);
+            opacity: 0.65;
+            z-index: 1;
+        }
+
+        .stage-card {
+            background: #08080c;
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 6px;
+            box-shadow: 0 35px 80px rgba(0,0,0,0.9), 0 0 40px rgba(86, 156, 214, 0.15);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+        .stage-card:hover {
+            border-color: var(--accent-blue);
+            box-shadow: 0 45px 100px rgba(0,0,0,0.95), 0 0 50px 8px var(--glow-blue);
+        }
+        .stage-wrapper:hover .cascade-layer.l1 {
+            box-shadow: 0 0 30px var(--glow-blue);
+            border-color: rgba(86, 156, 214, 0.8);
+        }
+        .stage-wrapper:hover .cascade-layer.l2 {
+            transform: translate3d(24px, -18px, 0) scale(0.82) rotate(60deg);
+            opacity: 0.85;
+            box-shadow: 0 0 25px var(--glow-blue);
+        }
+
+        /* 3D Viewport Frame */
+        .stage-viewport {
+            position: relative;
+            width: 100%;
+            height: 72vh;
+            min-height: 540px;
+            background: #010103;
+        }
+
+        .stage-viewport iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            display: block;
+        }
+
+        /* Stage Dock Controls */
+        .stage-dock {
+            background: rgba(10, 10, 14, 0.85);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255,255,255,0.08);
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 0.75rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .dock-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .dock-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 6px 12px;
+            border-radius: 3px;
+            color: #d0d0dc;
+        }
+        .dock-pill kbd {
+            background: rgba(86, 156, 214, 0.15);
+            border: 1px solid rgba(86, 156, 214, 0.4);
+            color: var(--accent-blue);
+            padding: 2px 6px;
+            border-radius: 2px;
+            font-family: inherit;
+            font-weight: 700;
+        }
+
+        .dock-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .btn-fullscreen {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.25);
+            color: #fff;
+            padding: 8px 16px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: all 0.25s ease;
+        }
+        .btn-fullscreen:hover {
+            border-color: var(--accent-blue);
+            background: rgba(86, 156, 214, 0.1);
+            color: var(--accent-blue);
+            box-shadow: 0 0 20px var(--glow-blue);
+        }
+
+        @media (max-width: 900px) {
+            nav, .gallery-container, footer { padding-left: 24px; padding-right: 24px; }
+            .stage-viewport { height: 60vh; min-height: 400px; }
+            .stage-dock { justify-content: center; }
+        }
+
+        /* Footer */
+        footer {
+            padding: 60px 48px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: #020204;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- MINIMALIST FLOATING HEADER -->
+    <nav>
+        <a href="index.html" class="brand-mark">My Wondrous Travels</a>
+        <div class="nav-links">
+            <a href="index.html">Collection</a>
+            <a href="virtual-gallery.html" style="color: var(--accent-blue);">Virtual Gallery</a>
+            <a href="journal.html">Studio Journal</a>
+            <a href="exhibitions.html">Exhibitions</a>
+            <a href="https://www.saatchiart.com/finespraypaintart" target="_blank">Saatchi Store</a>
+        </div>
+    </nav>
+
+    <main class="gallery-container">
+        <div class="gallery-header">
+            <div class="gallery-header-text">
+                <h1>Virtual Gallery</h1>
+                <p>3D Exhibition Space // Artificial Exploration</p>
+            </div>
+        </div>
+
+        <div class="stage-wrapper">
+            <!-- Signature Geometric Accent -->
+            <div class="spiral-cascade-container">
+                <div class="cascade-layer l1"></div>
+                <div class="cascade-layer l2"></div>
+            </div>
+
+            <div class="stage-card" id="stageCard">
+                <div class="stage-viewport" id="viewportContainer">
+                    <iframe 
+                        id="anasaeaFrame"
+                        src="https://anasaea.com/viewExhibition/5fQdbnr4tMCnfTMKD"
+                        title="ANASAEA Virtual Gallery"
+                        allow="accelerometer; autoplay; camera; microphone; vr; xr-spatial-tracking; fullscreen"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+
+                <div class="stage-dock">
+                    <div class="dock-controls">
+                        <span class="dock-pill"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or Arrows to Move</span>
+                        <span class="dock-pill">Click &amp; Drag to Look</span>
+                    </div>
+                    <div class="dock-actions">
+                        <button class="btn-fullscreen" onclick="toggleFullscreen()">Expand View ⛶</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div>My Wondrous Travels • Created on the Shore of Lake Erie, Ohio</div>
+        <div>100% Aerosol Mist • No Brushes</div>
+    </footer>
+
+    <script>
+        function toggleFullscreen() {
+            const elem = document.getElementById('viewportContainer');
+            if (!document.fullscreenElement) {
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.webkitRequestFullscreen) {
+                    elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) {
+                    elem.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+    </script>
+</body>
+</html>

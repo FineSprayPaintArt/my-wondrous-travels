@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studio Journal | My Wondrous Travels</title>
+    <style>
+        :root {
+            --bg: #010103;
+            --panel-bg: #0e0e12;
+            --text: #eaeaf2;
+            --muted: #75757e;
+            --accent: #569cd6;
+            --glow: rgba(86, 156, 214, 0.4);
+            
+            --accent-blue: #569cd6;
+            --glow-blue: rgba(86, 156, 214, 0.7);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: radial-gradient(circle at center, #0e0e12 0%, var(--bg) 70%);
+            color: var(--text);
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(255, 255, 255, 0.02),
+                rgba(255, 255, 255, 0.02) 1px,
+                transparent 1px,
+                transparent 4px
+            );
+            pointer-events: none;
+            z-index: 99;
+        }
+
+        /* Nav matching index.html */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 28px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: rgba(1, 1, 3, 0.75);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .brand-mark {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: #fff;
+        }
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.85;
+            transition: all 0.3s ease;
+        }
+        .nav-links a:hover { 
+            opacity: 1; 
+            color: var(--accent-blue);
+            text-shadow: 0 0 12px var(--glow-blue);
+        }
+
+        /* Journal Container & Grid Layout */
+        .journal-container {
+            max-width: 1440px;
+            margin: 140px auto 60px auto;
+            padding: 0 48px;
+            width: 100%;
+            flex: 1;
+        }
+        .journal-header {
+            margin-bottom: 40px;
+        }
+        .journal-header h1 {
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            margin-bottom: 12px;
+        }
+        .journal-header p {
+            color: var(--muted);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .journal-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 28px;
+            margin-bottom: 34px;
+        }
+
+        /* =======================================================
+           SEQUENTIAL SPIRAL CASCADE (AEROSOL LAYERING EFFECT)
+        ======================================================= */
+        .spiral-cascade-container {
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .cascade-top-right {
+            top: -25px;
+            right: -25px;
+        }
+        .cascade-bottom-left {
+            bottom: -25px;
+            left: -25px;
+        }
+
+        .cascade-layer {
+            position: absolute;
+            inset: 0;
+            border: 1px solid rgba(86, 156, 214, 0.4);
+            background: linear-gradient(135deg, rgba(86, 156, 214, 0.16), transparent 75%);
+            box-shadow: 0 0 25px rgba(86, 156, 214, 0.4);
+            border-radius: 2px;
+            transform-origin: center center;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.6s ease,
+                        box-shadow 0.6s ease,
+                        border-color 0.6s ease;
+        }
+
+        /* Top-Right Spiral Vector */
+        .cascade-top-right .l1 {
+            transform: translate3d(0, 0, 0) scale(1) rotate(45deg);
+            opacity: 0.95;
+            z-index: 4;
+        }
+        .cascade-top-right .l2 {
+            transform: translate3d(20px, -15px, 0) scale(0.78) rotate(58deg);
+            opacity: 0.7;
+            z-index: 3;
+        }
+        .cascade-top-right .l3 {
+            transform: translate3d(38px, -28px, 0) scale(0.58) rotate(72deg);
+            opacity: 0.48;
+            z-index: 2;
+        }
+        .cascade-top-right .l4 {
+            transform: translate3d(52px, -38px, 0) scale(0.40) rotate(88deg);
+            opacity: 0.28;
+            z-index: 1;
+        }
+
+        /* Bottom-Left Spiral Vector */
+        .cascade-bottom-left .l1 {
+            transform: translate3d(0, 0, 0) scale(1) rotate(45deg);
+            background: linear-gradient(315deg, rgba(86, 156, 214, 0.16), transparent 75%);
+            opacity: 0.95;
+            z-index: 4;
+        }
+        .cascade-bottom-left .l2 {
+            transform: translate3d(-20px, 15px, 0) scale(0.78) rotate(32deg);
+            background: linear-gradient(315deg, rgba(86, 156, 214, 0.16), transparent 75%);
+            opacity: 0.7;
+            z-index: 3;
+        }
+        .cascade-bottom-left .l3 {
+            transform: translate3d(-38px, 28px, 0) scale(0.58) rotate(18deg);
+            background: linear-gradient(315deg, rgba(86, 156, 214, 0.16), transparent 75%);
+            opacity: 0.48;
+            z-index: 2;
+        }
+        .cascade-bottom-left .l4 {
+            transform: translate3d(-52px, 38px, 0) scale(0.40) rotate(2deg);
+            background: linear-gradient(315deg, rgba(86, 156, 214, 0.16), transparent 75%);
+            opacity: 0.28;
+            z-index: 1;
+        }
+
+        /* Hover Expansion */
+        .reel-card:hover .cascade-top-right .l1,
+        .feature-banner:hover .cascade-top-right .l1 {
+            box-shadow: 0 0 35px var(--glow-blue);
+            border-color: rgba(86, 156, 214, 0.8);
+        }
+        .reel-card:hover .cascade-top-right .l2,
+        .feature-banner:hover .cascade-top-right .l2 {
+            transform: translate3d(28px, -20px, 0) scale(0.82) rotate(60deg);
+            opacity: 0.85;
+            box-shadow: 0 0 30px var(--glow-blue);
+        }
+        .reel-card:hover .cascade-top-right .l3,
+        .feature-banner:hover .cascade-top-right .l3 {
+            transform: translate3d(50px, -36px, 0) scale(0.64) rotate(76deg);
+            opacity: 0.65;
+            box-shadow: 0 0 25px var(--glow-blue);
+        }
+        .reel-card:hover .cascade-top-right .l4,
+        .feature-banner:hover .cascade-top-right .l4 {
+            transform: translate3d(70px, -50px, 0) scale(0.46) rotate(94deg);
+            opacity: 0.45;
+            box-shadow: 0 0 20px var(--glow-blue);
+        }
+
+        .reel-card:hover .cascade-bottom-left .l2 {
+            transform: translate3d(-28px, 20px, 0) scale(0.82) rotate(30deg);
+            opacity: 0.85;
+            box-shadow: 0 0 30px var(--glow-blue);
+        }
+        .reel-card:hover .cascade-bottom-left .l3 {
+            transform: translate3d(-50px, 36px, 0) scale(0.64) rotate(14deg);
+            opacity: 0.65;
+            box-shadow: 0 0 25px var(--glow-blue);
+        }
+        .reel-card:hover .cascade-bottom-left .l4 {
+            transform: translate3d(-70px, 50px, 0) scale(0.46) rotate(-2deg);
+            opacity: 0.45;
+            box-shadow: 0 0 20px var(--glow-blue);
+        }
+
+        /* Reel Cards */
+        .reel-card {
+            background: var(--panel-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 4px;
+            position: relative;
+            overflow: visible;
+            aspect-ratio: 9/16;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+        }
+        .reel-card:hover {
+            border-color: var(--accent-blue);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.95), 0 0 40px 8px var(--glow-blue);
+            transform: translateY(-6px);
+        }
+        .reel-video-wrap {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px;
+            z-index: 2;
+        }
+        .reel-card video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            opacity: 0.75;
+            transition: opacity 0.3s ease;
+        }
+        .reel-card:hover video {
+            opacity: 1;
+        }
+        .reel-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(1,1,3,0.95) 0%, rgba(1,1,3,0) 100%);
+            pointer-events: none;
+            z-index: 3;
+        }
+        .reel-info h3 {
+            margin: 0 0 4px 0;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .reel-info p {
+            margin: 0;
+            font-size: 0.75rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Feature Film Banner */
+        .feature-banner {
+            background: var(--panel-bg);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 4px;
+            padding: 50px;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 50px;
+            align-items: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            position: relative;
+            overflow: visible;
+            margin-top: 36px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .feature-banner:hover {
+            border-color: var(--accent-blue);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.95), 0 0 40px 8px var(--glow-blue);
+        }
+        .feature-copy {
+            position: relative;
+            z-index: 2;
+        }
+        .feature-copy span {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            display: block;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+        .feature-banner:hover .feature-copy span {
+            color: var(--accent-blue);
+            text-shadow: 0 0 10px var(--glow-blue);
+        }
+        .feature-copy h2 {
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+            color: #fff;
+        }
+        .feature-copy p {
+            color: var(--muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 28px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn-trailer {
+            display: inline-block;
+            padding: 16px 32px;
+            background: #fff;
+            color: #000;
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+        .btn-trailer:hover {
+            background: var(--accent-blue);
+            color: #000;
+            box-shadow: 0 0 25px 4px var(--glow-blue);
+            transform: translateY(-2px);
+        }
+        .feature-visual {
+            position: relative;
+            aspect-ratio: 16/9;
+            width: 100%;
+            background: linear-gradient(to bottom, rgba(3,3,5,0.3), rgba(3,3,5,0.6)), url('FLC 1.jpg') center/cover no-repeat;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            border: 1px solid rgba(255,255,255,0.15);
+            overflow: hidden;
+            z-index: 2;
+            transition: transform 0.4s ease, border-color 0.4s ease;
+        }
+        .feature-visual:hover {
+            transform: scale(1.02);
+            border-color: var(--accent-blue);
+        }
+        .play-button {
+            width: 64px;
+            height: 64px;
+            background: rgba(86, 156, 214, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px var(--glow);
+            transition: all 0.3s ease;
+        }
+        .feature-visual:hover .play-button {
+            transform: scale(1.1);
+            background: var(--accent-blue);
+            box-shadow: 0 0 35px var(--glow-blue);
+        }
+        .play-button::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-left: 16px solid #fff;
+            margin-left: 4px;
+        }
+
+        @media (max-width: 1024px) {
+            .journal-row { grid-template-columns: repeat(2, 1fr); }
+            .feature-banner { grid-template-columns: 1fr; gap: 30px; padding: 30px; }
+            nav, .journal-container, footer { padding-left: 24px; padding-right: 24px; }
+        }
+        @media (max-width: 600px) {
+            .journal-row { grid-template-columns: 1fr; }
+            nav { padding: 20px 24px; }
+        }
+
+        /* Footer */
+        footer {
+            padding: 60px 48px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: #020204;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- MINIMALIST FLOATING HEADER -->
+    <nav>
+        <a href="index.html" class="brand-mark">My Wondrous Travels</a>
+        <div class="nav-links">
+            <a href="index.html">Collection</a>
+            <a href="virtual-gallery.html">Virtual Gallery</a>
+            <a href="journal.html" style="opacity: 1; color: var(--accent-blue);">Studio Journal</a>
+            <a href="exhibitions.html">Exhibitions</a>
+            <a href="https://www.saatchiart.com/finespraypaintart" target="_blank">Saatchi Store</a>
+        </div>
+    </nav>
+
+    <main class="journal-container">
+        <div class="journal-header">
+            <h1>Studio Journal</h1>
+            <p>Daily process, high-stakes techniques, and studio dispatches.</p>
+        </div>
+
+        <!-- Row 1: Reels 1 to 5 -->
+        <div class="journal-row">
+            <!-- Reel 1 (Top-Right Spiral) -->
+            <div class="reel-card" onmouseenter="this.querySelector('video').play()" onmouseleave="this.querySelector('video').pause(); this.querySelector('video').currentTime = 0;" onclick="const v = this.querySelector('video'); v.paused ? v.play() : v.pause();">
+                <div class="spiral-cascade-container cascade-top-right">
+                    <div class="cascade-layer l1"></div>
+                    <div class="cascade-layer l2"></div>
+                    <div class="cascade-layer l3"></div>
+                    <div class="cascade-layer l4"></div>
+                </div>
+                <div class="reel-video-wrap">
+                    <video muted loop playsinline preload="none">
+                        <source src="IG Feed 1.mp4" type="video/mp4">
+                    </video>
+                    <div class="reel-info">
+                        <h3>01 // The Core</h3>
+                        <p>I spray it til you see it.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reel 2 (Bottom-Left Spiral) -->
+            <div class="reel-card" onmouseenter="this.querySelector('video').play()" onmouseleave="this.querySelector('video').pause(); this.querySelector('video').currentTime = 0;" onclick="const v = this.querySelector('video'); v.paused ? v.play() : v.pause();">
+                <div class="spiral-cascade-container cascade-bottom-left">
+                    <div class="cascade-layer l1"></div>
+                    <div class="cascade-layer l2"></div>
+                    <div class="cascade-layer l3"></div>
+                    <div class="cascade-layer l4"></div>
+                </div>
+                <div class="reel-video-wrap">
+                    <video muted loop playsinline preload="none">
+                        <source src="IG Feed 2.mp4" type="video/mp4">
+                    </video>
+                    <div class="reel-info">
+                        <h3>02 // The Setup</h3>
+                        <p>Paint, tools, and the sock.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reel 3 (Top-Right Spiral) -->
+            <div class="reel-card" onmouseenter="this.querySelector('video').play()" onmouseleave="this.querySelector('video').pause(); this.querySelector('video').currentTime = 0;" onclick="const v = this.querySelector('video'); v.paused ? v.play() : v.pause();">
+                <div class="spiral-cascade-container cascade-top-right">
+                    <div class="cascade-layer l1"></div>
+                    <div class="cascade-layer l2"></div>
+                    <div class="cascade-layer l3"></div>
+                    <div class="cascade-layer l4"></div>
+                </div>
+                <div class="reel-video-wrap">
+                    <video muted loop playsinline preload="none">
+                        <source src="IG Feed 3.mp4" type="video/mp4">
+                    </video>
+                    <div class="reel-info">
+                        <h3>03 // The Process</h3>
+                        <p>Spray & wipe philosophy.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reel 4 (Bottom-Left Spiral) -->
+            <div class="reel-card" onmouseenter="this.querySelector('video').play()" onmouseleave="this.querySelector('video').pause(); this.querySelector('video').currentTime = 0;" onclick="const v = this.querySelector('video'); v.paused ? v.play() : v.pause();">
+                <div class="spiral-cascade-container cascade-bottom-left">
+                    <div class="cascade-layer l1"></div>
+                    <div class="cascade-layer l2"></div>
+                    <div class="cascade-layer l3"></div>
+                    <div class="cascade-layer l4"></div>
+                </div>
+                <div class="reel-video-wrap">
+                    <video muted loop playsinline preload="none">
+                        <source src="IG Feed 4.mp4" type="video/mp4">
+                    </video>
+                    <div class="reel-info">
+                        <h3>04 // Risk vs. Reward</h3>
+                        <p>Infinite Worlds straight-edge technique.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reel 5 (Top-Right Spiral) -->
+            <div class="reel-card" onmouseenter="this.querySelector('video').play()" onmouseleave="this.querySelector('video').pause(); this.querySelector('video').currentTime = 0;" onclick="const v = this.querySelector('video'); v.paused ? v.play() : v.pause();">
+                <div class="spiral-cascade-container cascade-top-right">
+                    <div class="cascade-layer l1"></div>
+                    <div class="cascade-layer l2"></div>
+                    <div class="cascade-layer l3"></div>
+                    <div class="cascade-layer l4"></div>
+                </div>
+                <div class="reel-video-wrap">
+                    <video muted loop playsinline preload="none">
+                        <source src="IG Feed 5.mp4" type="video/mp4">
+                    </video>
+                    <div class="reel-info">
+                        <h3>05 // Less Is More</h3>
+                        <p>Atmospheric rings & spray effects.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 2: Reels 6 to 10 -->
+        <div class="journal-row" style="grid-template-columns: repeat(5, 1fr);">
+            <!-- Reel 6 (Bottom-Left Spiral) -->
+            <div class="reel-card" onmouseenter="this.querySelector('video').play()" onmouseleave="this.querySelector('video').pause(); this.querySelector('video').currentTime = 0;" onclick="const v = this.querySelector('video'); v.paused ? v.play() : v.pause();">
+                <div class="spiral-cascade-container cascade-bottom-left">
+                    <div class="cascade-layer l1"></div>
+                    <div class="cascade-layer l2"></div>
+                    <div class="cascade-layer l3"></div>
+                    <div class="cascade-layer l4"></div>
+                </div>
+                <div class="reel-video-wrap">
+                    <video muted loop playsinline preload="none">
+                        <source src="IG Feed 6.mp4" type="video/mp4">
+                    </video>
+                    <div class="reel-info">
+                        <h3>06 // Mistakes Made Right</h3>
+                        <p>Wet paint panic to happy accident.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reel 7 (Top-Right Spiral) -->
+            <div class="reel-card" onmouseenter="this.querySelector('video').play()" onmouseleave="this.querySelector('video').pause(); this.querySelector('video').currentTime = 0;" onclick="const v = this.querySelector('video'); v.paused ? v.play() : v.pause();">
+                <div class="spiral-cascade-container cascade-top-right">
+                    <div class="cascade-layer l1"></div>
+                    <div class="cascade-layer l2"></div>
+                    <div class="cascade-layer l3"></div>
+                    <div class="cascade-layer l4"></div>
+                </div>
+                <div class="reel-video-wrap">
+                    <video muted loop playsinline preload="none">
+                        <source src="IG Feed 7.mp4" type="video/mp4">
+                    </video>
+                    <div class="reel-info">
+                        <h3>07 // Light Paints Everything</h3>
+                        <p>Atmospheric realism & reflections.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reel 8 (Bottom-Left Spiral) -->
+            <div class="reel-card" onmouseenter="this.querySelector('video').play()" onmouseleave="this.querySelector('video').pause(); this.querySelector('video').currentTime = 0;" onclick="const v = this.querySelector('video'); v.paused ? v.play() : v.pause();">
+                <div class="spiral-cascade-container cascade-bottom-left">
+                    <div class="cascade-layer l1"></div>
+                    <div class="cascade-layer l2"></div>
+                    <div class="cascade-layer l3"></div>
+                    <div class="cascade-layer l4"></div>
+                </div>
+                <div class="reel-video-wrap">
+                    <video muted loop playsinline preload="none">
+                        <source src="IG Feed 8.mp4" type="video/mp4">
+                    </video>
+                    <div class="reel-info">
+                        <h3>08 // Know Your Paint</h3>
+                        <p>Matte vs. gloss dabbing & light reveal.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reel 9 (Top-Right Spiral) -->
+            <div class="reel-card" onmouseenter="this.querySelector('video').play()" onmouseleave="this.querySelector('video').pause(); this.querySelector('video').currentTime = 0;" onclick="const v = this.querySelector('video'); v.paused ? v.play() : v.pause();">
+                <div class="spiral-cascade-container cascade-top-right">
+                    <div class="cascade-layer l1"></div>
+                    <div class="cascade-layer l2"></div>
+                    <div class="cascade-layer l3"></div>
+                    <div class="cascade-layer l4"></div>
+                </div>
+                <div class="reel-video-wrap">
+                    <video muted loop playsinline preload="none">
+                        <source src="IG Feed 9.mp4" type="video/mp4">
+                    </video>
+                    <div class="reel-info">
+                        <h3>09 // Build Your World</h3>
+                        <p>Trash bag texture & moon lift.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reel 10 (Bottom-Left Spiral) -->
+            <div class="reel-card" onmouseenter="this.querySelector('video').play()" onmouseleave="this.querySelector('video').pause(); this.querySelector('video').currentTime = 0;" onclick="const v = this.querySelector('video'); v.paused ? v.play() : v.pause();">
+                <div class="spiral-cascade-container cascade-bottom-left">
+                    <div class="cascade-layer l1"></div>
+                    <div class="cascade-layer l2"></div>
+                    <div class="cascade-layer l3"></div>
+                    <div class="cascade-layer l4"></div>
+                </div>
+                <div class="reel-video-wrap">
+                    <video muted loop playsinline preload="none">
+                        <source src="IG Feed 10.mp4" type="video/mp4">
+                    </video>
+                    <div class="reel-info">
+                        <h3>10 // Spray Effects</h3>
+                        <p>Use your fingers.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 11 // Feature Film Spotlight -->
+        <div class="feature-banner">
+            <div class="spiral-cascade-container cascade-top-right" style="width: 320px; height: 320px; top: -45px; right: -45px;">
+                <div class="cascade-layer l1"></div>
+                <div class="cascade-layer l2"></div>
+                <div class="cascade-layer l3"></div>
+                <div class="cascade-layer l4"></div>
+            </div>
+
+            <div class="feature-copy">
+                <span>11 // Feature Dispatch</span>
+                <h2>Finger Laced Crown</h2>
+                <p>Exploring 14 years of aerosol atmospheric realism, early tokenized digital art, and Navigating the high-wire act of feature film production.</p>
+                <a href="https://youtu.be/-cBZcOsQSD8" target="_blank" class="btn-trailer">Watch Official Trailer</a>
+            </div>
+            <a href="https://youtu.be/-cBZcOsQSD8" target="_blank" class="feature-visual">
+                <div class="play-button"></div>
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        <div>My Wondrous Travels</div>
+    </footer>
+</body>
+</html>
