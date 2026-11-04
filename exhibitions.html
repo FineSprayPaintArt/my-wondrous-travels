@@ -17,6 +17,20 @@
             --glow-blue: rgba(86, 156, 214, 0.7);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        /* Prevent layout jerk caused by scrollbars appearing/disappearing */
+        html {
+            overflow-y: scroll;
+            scrollbar-gutter: stable;
+        }
+
+        /* Suppress scrollbars when focus / cinematic overlay is open */
+        html.cinematic-locked,
+        body.cinematic-active {
+            overflow: hidden !important;
+            scrollbar-gutter: auto;
+        }
+
         body {
             background: radial-gradient(circle at center, #0e0e12 0%, var(--bg) 70%);
             color: var(--text);
@@ -106,7 +120,7 @@
             cursor: pointer;
         }
 
-        /* Fade out non-active cards when cinematic mode is active */
+        /* Fade out non-active elements during cinematic mode */
         body.cinematic-active .exhibit-card-wrapper:not(.cinematic-open) {
             opacity: 0;
             pointer-events: none;
@@ -121,16 +135,11 @@
             opacity: 0.15;
         }
 
-        /* Crucial: strip transforms from parent so fixed coordinates anchor to real viewport */
-        body.cinematic-active .timeline-feed,
-        body.cinematic-active .exhibit-card-wrapper.cinematic-open {
-            transform: none !important;
-        }
-
         .exhibit-card-wrapper.cinematic-open {
             opacity: 1 !important;
             pointer-events: auto !important;
             z-index: 70;
+            transform: none !important;
         }
         .exhibit-card-wrapper.cinematic-open .exhibit-card {
             opacity: 0;
@@ -138,7 +147,16 @@
             transition: opacity 0.3s ease;
         }
 
-        /* Nav matching site design */
+        /* Hide spiral cascade boxes while focus mode is active */
+        body.cinematic-active .spiral-cascade-container,
+        .exhibit-card-wrapper.cinematic-open .spiral-cascade-container {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        /* Nav */
         nav {
             position: fixed;
             top: 0;
@@ -212,7 +230,7 @@
             letter-spacing: 2px;
         }
 
-        /* Timeline / Entry Rows */
+        /* Timeline Feed */
         .timeline-feed {
             display: flex;
             flex-direction: column;
@@ -221,17 +239,16 @@
 
         .exhibit-card-wrapper {
             position: relative;
-            overflow: visible;
             transition: opacity 0.5s ease, transform 0.5s ease;
         }
 
-        /* 50% Smaller Cascade */
+        /* Fixed Anchor Spiral Cascade */
         .spiral-cascade-container {
             position: absolute;
             width: 120px;
             height: 120px;
             pointer-events: none;
-            z-index: -1;
+            z-index: 1;
         }
         .cascade-top-right {
             top: -15px;
@@ -354,18 +371,17 @@
             text-shadow: 0 0 8px var(--glow-blue);
         }
 
-        /* =======================================================
-           LOCKED BOTTOM DOCK (Strict Viewport Fixed Placement)
-        ======================================================= */
+        /* Fixed Scrapbook Drawer */
         .scrapbook-drawer {
             position: fixed !important;
             bottom: 24px !important;
             top: auto !important;
             left: 50% !important;
             transform: translateX(-50%) !important;
+            margin: 0 !important;
             width: min(1140px, 94vw);
-            max-height: 140px;
-            background: rgba(4, 4, 8, 0.78);
+            height: 135px;
+            background: rgba(4, 4, 8, 0.88);
             backdrop-filter: blur(14px);
             border: 1px solid rgba(86, 156, 214, 0.4);
             border-radius: 8px;
@@ -375,23 +391,25 @@
             align-items: center;
             gap: 10px;
             opacity: 0;
+            visibility: hidden;
             pointer-events: none;
-            transition: opacity 0.35s ease;
+            transition: opacity 0.35s ease, visibility 0.35s ease;
             z-index: 120;
+            flex-shrink: 0;
         }
 
         .exhibit-card-wrapper.cinematic-open .scrapbook-drawer {
             opacity: 1 !important;
+            visibility: visible !important;
             pointer-events: auto !important;
-            transform: translateX(-50%) !important;
         }
 
         body.image-focus-active .scrapbook-drawer {
             opacity: 0 !important;
+            visibility: hidden !important;
             pointer-events: none !important;
         }
 
-        /* Carousel Navigation Buttons */
         .carousel-arrow {
             flex: 0 0 34px;
             height: 34px;
@@ -416,7 +434,6 @@
             transform: scale(1.08);
         }
 
-        /* Horizontal Track */
         .carousel-track {
             display: flex;
             flex-wrap: nowrap;
@@ -440,7 +457,6 @@
             border-radius: 2px;
         }
 
-        /* Frosted Cards */
         .iw-frosted-card {
             flex: 0 0 135px;
             background: rgba(12, 12, 18, 0.75);
@@ -505,7 +521,7 @@
             font-weight: 700;
         }
 
-        /* HERO LIGHTBOX FOCUS VIEW */
+        /* Lightbox Focus View */
         #hero-lightbox {
             position: fixed;
             top: 45%;
@@ -919,17 +935,43 @@
             </div>
 
             <!-- 2021 Bethlehem -->
-            <div class="exhibit-card-wrapper reveal-item">
+            <div class="exhibit-card-wrapper reveal-item" data-bg="bhg 6.jpg">
                 <div class="spiral-cascade-container cascade-bottom-left">
                     <div class="cascade-layer l1"></div>
                     <div class="cascade-layer l2"></div>
                 </div>
-                <div class="exhibit-card">
+                <div class="exhibit-card" onclick="openCinematicMode(this)">
                     <div class="exhibit-year">2021</div>
                     <div class="exhibit-content">
                         <h3>Bethlehem House Gallery Winter Show</h3>
                         <p>Featured winter exhibition (Jan–Mar 2021) at Bethlehem House Gallery.</p>
                     </div>
+                </div>
+                <div class="scrapbook-drawer" onclick="event.stopPropagation()">
+                    <div class="carousel-arrow" onclick="scrollCarousel(this, -1)">‹</div>
+                    <div class="carousel-track">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('bhg 1.jpg', 'Bethlehem House Gallery • Plate 01')">
+                            <div class="iw-frosted-thumb"><img src="bhg 1.jpg" alt="Bethlehem House Gallery 1"></div>
+                            <div class="iw-frosted-meta"><h4>Winter Show</h4><span>01</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('bhg 2.jpg', 'Bethlehem House Gallery • Plate 02')">
+                            <div class="iw-frosted-thumb"><img src="bhg 2.jpg" alt="Bethlehem House Gallery 2"></div>
+                            <div class="iw-frosted-meta"><h4>Gallery View</h4><span>02</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('bhg 3.jpg', 'Bethlehem House Gallery • Plate 03')">
+                            <div class="iw-frosted-thumb"><img src="bhg 3.jpg" alt="Bethlehem House Gallery 3"></div>
+                            <div class="iw-frosted-meta"><h4>Exhibition Piece</h4><span>03</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('bhg 4.jpg', 'Bethlehem House Gallery • Plate 04')">
+                            <div class="iw-frosted-thumb"><img src="bhg 4.jpg" alt="Bethlehem House Gallery 4"></div>
+                            <div class="iw-frosted-meta"><h4>Featured Wall</h4><span>04</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('bhg 5.jpg', 'Bethlehem House Gallery • Plate 05')">
+                            <div class="iw-frosted-thumb"><img src="bhg 5.jpg" alt="Bethlehem House Gallery 5"></div>
+                            <div class="iw-frosted-meta"><h4>Opening Night</h4><span>05</span></div>
+                        </div>
+                    </div>
+                    <div class="carousel-arrow" onclick="scrollCarousel(this, 1)">›</div>
                 </div>
             </div>
 
@@ -1139,6 +1181,8 @@
         const lightboxImg = document.getElementById('lightbox-img');
         const lightboxCaption = document.getElementById('lightbox-caption');
 
+        let savedScrollY = 0;
+
         function scrollCarousel(buttonElement, direction) {
             const drawer = buttonElement.closest('.scrapbook-drawer');
             const track = drawer.querySelector('.carousel-track');
@@ -1172,9 +1216,13 @@
                 item.classList.remove('cinematic-open');
             });
             document.body.classList.remove('cinematic-active');
+            document.documentElement.classList.remove('cinematic-locked');
             closeHeroLightbox();
 
             if (!isOpen) {
+                // Pin scroll position before activating focus overlay
+                savedScrollY = window.scrollY;
+
                 mediaContainer.classList.add('mist-flash');
 
                 setTimeout(() => {
@@ -1193,6 +1241,7 @@
                     mediaContainer.classList.remove('mist-flash');
                     wrapper.classList.add('cinematic-open');
                     document.body.classList.add('cinematic-active');
+                    document.documentElement.classList.add('cinematic-locked');
                 }, 180);
             }
         }
@@ -1201,6 +1250,7 @@
             if (event) event.stopPropagation();
             closeHeroLightbox();
             document.body.classList.remove('cinematic-active');
+            document.documentElement.classList.remove('cinematic-locked');
             document.querySelectorAll('.exhibit-card-wrapper').forEach(item => {
                 item.classList.remove('cinematic-open');
             });
@@ -1209,6 +1259,9 @@
             if (cinematicVideo) {
                 cinematicVideo.pause();
             }
+
+            // Restore scroll coordinate with zero jump
+            window.scrollTo({ top: savedScrollY, behavior: 'instant' });
         }
 
         mediaContainer.addEventListener('click', (e) => {
