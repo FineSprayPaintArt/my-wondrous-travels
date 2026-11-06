@@ -971,6 +971,7 @@
         min-height: auto;
       }
 
+      /* Scale down spiral frames so rotated edges stay inside mobile viewport */
       .spiral-cascade-container {
         width: 150px;
         height: 150px;
@@ -1029,6 +1030,7 @@
         padding: 15px 20px;
       }
 
+      /* Infinite Worlds Mobile Adjustments */
       .iw-section {
         padding: 90px 20px 80px 20px;
         min-height: auto;
@@ -1113,10 +1115,10 @@
 
           <div class="artwork-image-container" id="lorainCanvas">
             <div class="view-layer active">
-              <img src="number 15.jpg" alt="Fantasy Lorain Final">
+              <img src="Number 15.jpg" alt="Fantasy Lorain Final">
             </div>
             <div class="view-layer">
-              <img src="number 15.jpg" alt="Fantasy Lorain Buffer">
+              <img src="Number 15.jpg" alt="Fantasy Lorain Buffer">
             </div>
             <div class="hover-hint">Tap or hover deck to shift</div>
           </div>
@@ -1313,18 +1315,18 @@
 
   <script>
     const lorainPhotos = [
-      { src: "number 9.jpg", label: "Session 1" },
-      { src: "number 10.jpg", label: "Session 2" },
-      { src: "number 11.jpg", label: "Session 3" },
-      { src: "number 12.jpg", label: "Session 4" },
-      { src: "number 13.jpg", label: "Session 5" },
-      { src: "number 14.jpg", label: "Session 6" },
-      { src: "number 15.jpg", label: "Final Image (Session 7)" }
+      { src: "Number 9.jpg", label: "Session 1" },
+      { src: "Number 10.jpg", label: "Session 2" },
+      { src: "Number 11.jpg", label: "Session 3" },
+      { src: "Number 12.jpg", label: "Session 4" },
+      { src: "Number 13.jpg", label: "Session 5" },
+      { src: "Number 14.jpg", label: "Session 6" },
+      { src: "Number 15.jpg", label: "Final Image (Session 7)" }
     ];
 
     const barnPhotos = [
       { src: "number 1.jpg", label: "Session 1" },
-      { src: "number 2.jpg", label: "Session 2" },
+      { src: "Number 2.jpg", label: "Session 2" },
       { src: "number 3.jpg", label: "Session 3" },
       { src: "number 4.jpg", label: "Session 4" },
       { src: "number 5.jpg", label: "Session 5" },
@@ -1373,6 +1375,7 @@
       }
     ];
 
+    // Horizontally center active thumbnail inside its filmstrip without triggering vertical page jumps on mobile
     function centerThumbInStrip(targetThumb, filmstripContainer) {
       const stripRect = filmstripContainer.getBoundingClientRect();
       const thumbRect = targetThumb.getBoundingClientRect();
