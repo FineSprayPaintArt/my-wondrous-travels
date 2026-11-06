@@ -704,7 +704,7 @@
       transform: translate(-50%, -50%);
       width: min(680px, 80%);
       height: 480px;
-      background: url('IWlogo.jpg') center/contain no-repeat;
+      background: url('iwlogo.jpg') center/contain no-repeat;
       opacity: 0.5;
       filter: blur(2px) contrast(1.15) drop-shadow(0 0 25px rgba(86, 156, 214, 0.35));
       mix-blend-mode: screen;
@@ -971,7 +971,6 @@
         min-height: auto;
       }
 
-      /* Scale down spiral frames so rotated edges stay inside mobile viewport */
       .spiral-cascade-container {
         width: 150px;
         height: 150px;
@@ -1030,7 +1029,6 @@
         padding: 15px 20px;
       }
 
-      /* Infinite Worlds Mobile Adjustments */
       .iw-section {
         padding: 90px 20px 80px 20px;
         min-height: auto;
@@ -1200,6 +1198,45 @@
       </div>
     </section>
 
+    <!-- WORK 10: ETHEREAL THRESHOLD (NUMBER 19) -->
+    <section class="work-section" id="piece-10">
+      <div class="work-Split">
+        <div class="artwork-frame" id="number19Frame">
+          <div class="spiral-cascade-container cascade-top-right">
+            <div class="cascade-layer l1"></div>
+            <div class="cascade-layer l2"></div>
+            <div class="cascade-layer l3"></div>
+            <div class="cascade-layer l4"></div>
+          </div>
+
+          <div class="artwork-image-container" id="number19Canvas">
+            <div class="view-layer active">
+              <img src="number19.jpg" alt="Ethereal Threshold Final">
+            </div>
+            <div class="view-layer">
+              <img src="number19.jpg" alt="Ethereal Threshold Buffer">
+            </div>
+          </div>
+        </div>
+
+        <div class="editorial-copy">
+          <div class="index-tag">Work 10 • My Wondrous Travels Collection</div>
+          <h2>Ethereal Threshold</h2>
+          <div class="hook-line">Atmospheric Horizons & Celestial Dusk.</div>
+          <p>
+            A brand new exploration into multi-layered atmospheric spray paint application, charting distant celestial bodies hanging above soft vaporous skies and illuminated wildflower fields.
+          </p>
+          <div class="final-specs">
+            Custom Framing Available
+          </div>
+          <div class="cta-row">
+            <a href="https://www.saatchiart.com/finespraypaintart" target="_blank" class="btn-gsp btn-solid">Acquire Prints</a>
+            <a href="mailto:finespraypaintart@gmail.com?subject=Inquire%20About%20Original%20-%20Ethereal%20Threshold" class="btn-gsp btn-ghost">Inquire about original</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- INFINITE WORLDS MAGAZINE SHOWCASE -->
     <section class="iw-section" id="infinite-worlds">
       <div class="iw-watermark-bg">
@@ -1285,7 +1322,7 @@
 
           <div class="artwork-image-container">
             <div class="view-layer active">
-              <img src="Lorain Harbor Light House.jpg" alt="Upcoming 18x48 Lighthouse Reference" style="filter: grayscale(30%) contrast(1.1);">
+              <img src="lorain harbor light house.jpg" alt="Upcoming 18x48 Lighthouse Reference" style="filter: grayscale(30%) contrast(1.1);">
             </div>
           </div>
         </div>
@@ -1326,7 +1363,7 @@
 
     const barnPhotos = [
       { src: "number 1.jpg", label: "Session 1" },
-      { src: "Number 2.jpg", label: "Session 2" },
+      { src: "number 2.jpg", label: "Session 2" },
       { src: "number 3.jpg", label: "Session 3" },
       { src: "number 4.jpg", label: "Session 4" },
       { src: "number 5.jpg", label: "Session 5" },
@@ -1364,8 +1401,8 @@
       {
         id: "9",
         label: "Issue #9 • September 2021",
-        paint: "Time Off.jpg",
-        cover: "Issue 9.jpg"
+        paint: "time off.jpg",
+        cover: "issue 9.jpg"
       },
       {
         id: "11",
@@ -1375,7 +1412,6 @@
       }
     ];
 
-    // Horizontally center active thumbnail inside its filmstrip without triggering vertical page jumps on mobile
     function centerThumbInStrip(targetThumb, filmstripContainer) {
       const stripRect = filmstripContainer.getBoundingClientRect();
       const thumbRect = targetThumb.getBoundingClientRect();
