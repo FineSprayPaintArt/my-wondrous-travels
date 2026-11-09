@@ -1078,7 +1078,7 @@
       <a href="journal.html">Studio Journal</a>
       <a href="exhibitions.html">Exhibitions</a>
       <a href="virtual-gallery.html">Virtual Gallery</a>
-      <a href="https://www.saatchiart.com/finespraypaintart" target="_blank">Buy Prints</a>
+      <a href="" target="_blank">Buy Prints</a>
     </div>
   </nav>
 
@@ -1244,6 +1244,54 @@
       </div>
     </section>
 
+    <!-- WORK 11: INFERNO FIELDS -->
+    <section class="work-section" id="piece-11">
+      <div class="work-Split">
+        <div class="artwork-frame" id="infernoFrame">
+          <div class="spiral-cascade-container cascade-bottom-left">
+            <div class="cascade-layer l1"></div>
+            <div class="cascade-layer l2"></div>
+            <div class="cascade-layer l3"></div>
+            <div class="cascade-layer l4"></div>
+          </div>
+
+          <div class="artwork-image-container" id="infernoCanvas">
+            <div class="view-layer active">
+              <img src="inferno 5.jpg" alt="Inferno Fields Final">
+            </div>
+            <div class="view-layer">
+              <img src="inferno 5.jpg" alt="Inferno Fields Buffer">
+            </div>
+            <div class="hover-hint">Tap or hover deck to shift</div>
+          </div>
+          <div class="evolution-deck">
+            <div class="evolution-header">
+              <span>Studio Evolution Deck</span>
+              <span id="infernoStageText" class="stage-indicator">Final Image (Pass 5)</span>
+            </div>
+            <div class="evolution-filmstrip" id="infernoFilmstrip">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <div class="editorial-copy">
+          <div class="index-tag">Work 11 • My Wondrous Travels Collection</div>
+          <h2>Inferno Fields</h2>
+          <div class="hook-line">Commissioned for Infinite Worlds Magazine • Issue #5.</div>
+          <p>
+            Commissioned by Infinite Worlds Magazine for issue #5, This painting is done on canvas and went far deeper with layers than ever before at this size. It marked a powerful moment for me as an artist. There were many times this painting was almost ruined by errant sprays.
+          </p>
+          <div class="final-specs">
+            Custom Framing Available
+          </div>
+          <div class="cta-row">
+            <a href="mailto:finespraypaintart@gmail.com?subject=Inquire%20About%20Original%20-%20Inferno%20Fields" class="btn-gsp btn-ghost">Inquire about original</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- INFINITE WORLDS MAGAZINE SHOWCASE -->
     <section class="iw-section" id="infinite-worlds">
       <div class="iw-watermark-bg">
@@ -1384,6 +1432,14 @@
       { src: "quiet 1.jpg", label: "Pass 1" },
       { src: "quiet 2.jpg", label: "Pass 2" },
       { src: "quiet 3.jpg", label: "Final Image (Pass 3)" }
+    ];
+
+    const infernoPhotos = [
+      { src: "inferno 1.jpg", label: "Pass 1" },
+      { src: "inferno 2.jpg", label: "Pass 2" },
+      { src: "inferno 3.jpg", label: "Pass 3" },
+      { src: "inferno 4.jpg", label: "Pass 4" },
+      { src: "inferno 5.jpg", label: "Final Image (Pass 5)" }
     ];
 
     const iwIssues = [
@@ -1578,6 +1634,14 @@
         labelId: 'quietStageText',
         photos: quietPhotos,
         initialIndex: 2
+      });
+
+      setupController({
+        canvasId: 'infernoCanvas',
+        filmstripId: 'infernoFilmstrip',
+        labelId: 'infernoStageText',
+        photos: infernoPhotos,
+        initialIndex: 4
       });
 
       setupIwController();
