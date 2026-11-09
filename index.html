@@ -1196,10 +1196,10 @@
       </div>
     </section>
 
-    <!-- WORK 10: ETHEREAL THRESHOLD (NUMBER 19) -->
+    <!-- WORK 10: QUIET LIGHT -->
     <section class="work-section" id="piece-10">
       <div class="work-Split">
-        <div class="artwork-frame" id="number19Frame">
+        <div class="artwork-frame" id="quietFrame">
           <div class="spiral-cascade-container cascade-top-right">
             <div class="cascade-layer l1"></div>
             <div class="cascade-layer l2"></div>
@@ -1207,28 +1207,38 @@
             <div class="cascade-layer l4"></div>
           </div>
 
-          <div class="artwork-image-container" id="number19Canvas">
+          <div class="artwork-image-container" id="quietCanvas">
             <div class="view-layer active">
-              <img src="number19.jpg" alt="Ethereal Threshold Final">
+              <img src="quiet 3.jpg" alt="Quiet Light Final">
             </div>
             <div class="view-layer">
-              <img src="number19.jpg" alt="Ethereal Threshold Buffer">
+              <img src="quiet 3.jpg" alt="Quiet Light Buffer">
+            </div>
+            <div class="hover-hint">Tap or hover deck to shift</div>
+          </div>
+          <div class="evolution-deck">
+            <div class="evolution-header">
+              <span>Studio Evolution Deck</span>
+              <span id="quietStageText" class="stage-indicator">Final Image (Pass 3)</span>
+            </div>
+            <div class="evolution-filmstrip" id="quietFilmstrip">
+              <!-- Rendered via JS -->
             </div>
           </div>
         </div>
 
         <div class="editorial-copy">
           <div class="index-tag">Work 10 • My Wondrous Travels Collection</div>
-          <h2>Ethereal Threshold</h2>
-          <div class="hook-line">Atmospheric Horizons & Celestial Dusk.</div>
+          <h2>Quiet Light</h2>
+          <div class="hook-line">Celestial Horizons & Blue Vapor.</div>
           <p>
-            A brand new exploration into multi-layered atmospheric spray paint application, charting distant celestial bodies hanging above soft vaporous skies and illuminated wildflower fields.
+            Painted using various shades of Blue and white paint, and just a touch of color in the orbs. The end result is an Ethereal Landscape during a celestial event.
           </p>
           <div class="final-specs">
             Custom Framing Available
           </div>
           <div class="cta-row">
-            <a href="mailto:finespraypaintart@gmail.com?subject=Inquire%20About%20Original%20-%20Ethereal%20Threshold" class="btn-gsp btn-ghost">Inquire about original</a>
+            <a href="mailto:finespraypaintart@gmail.com?subject=Inquire%20About%20Original%20-%20Quiet%20Light" class="btn-gsp btn-ghost">Inquire about original</a>
           </div>
         </div>
       </div>
@@ -1368,6 +1378,12 @@
       { src: "number 7.jpg", label: "Session 7" },
       { src: "number 17.jpg", label: "Session 8" },
       { src: "number 19.jpg", label: "Latest Pass (Session 9)" }
+    ];
+
+    const quietPhotos = [
+      { src: "quiet 1.jpg", label: "Pass 1" },
+      { src: "quiet 2.jpg", label: "Pass 2" },
+      { src: "quiet 3.jpg", label: "Final Image (Pass 3)" }
     ];
 
     const iwIssues = [
@@ -1554,6 +1570,14 @@
         labelId: 'barnStageText',
         photos: barnPhotos,
         initialIndex: 8
+      });
+
+      setupController({
+        canvasId: 'quietCanvas',
+        filmstripId: 'quietFilmstrip',
+        labelId: 'quietStageText',
+        photos: quietPhotos,
+        initialIndex: 2
       });
 
       setupIwController();
