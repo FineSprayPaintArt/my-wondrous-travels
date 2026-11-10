@@ -183,7 +183,6 @@
       padding: 120px 60px 100px 60px;
       border-top: 1px solid rgba(255,255,255,0.06);
       background: linear-gradient(180deg, #07070a 0%, #010103 100%);
-      overflow: hidden;
       overflow-x: clip;
     }
     .work-Split {
@@ -191,10 +190,15 @@
       max-width: 1440px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: 1.25fr 0.75fr;
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
       gap: 60px;
       align-items: center;
       z-index: 2;
+    }
+    /* Prevent long filmstrips from stretching grid columns to the right */
+    .work-Split > * {
+      min-width: 0;
+      width: 100%;
     }
     
     /* SEQUENTIAL SPIRAL CASCADE */
@@ -317,6 +321,8 @@
 
     /* STANDARD WORK CARDS */
     .artwork-frame {
+      width: 100%;
+      min-width: 0;
       background: #09090c;
       border: 1px solid rgba(255,255,255,0.1);
       box-shadow: 0 35px 80px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.03) inset;
@@ -395,13 +401,17 @@
       max-width: 100%;
       width: auto;
       height: auto;
+      margin: 0 auto;
       object-fit: contain;
+      object-position: center center;
       display: block;
       box-shadow: 0 20px 45px rgba(0,0,0,0.7);
     }
 
     /* EDITORIAL EVOLUTION DECK */
     .evolution-deck {
+      width: 100%;
+      min-width: 0;
       background: #0b0b0f;
       padding: 16px 22px 20px 22px;
       border-top: 1px solid rgba(255,255,255,0.08);
@@ -428,6 +438,7 @@
     }
 
     .evolution-filmstrip {
+      width: 100%;
       display: flex;
       gap: 14px;
       overflow-x: auto;
@@ -509,16 +520,8 @@
       text-transform: uppercase;
       letter-spacing: -1px;
       line-height: 1.02;
-      margin-bottom: 16px;
-      color: #ffffff;
-    }
-    .editorial-copy .hook-line {
-      font-size: 1.15rem;
-      font-weight: 600;
-      color: #eaeaf2;
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
       margin-bottom: 24px;
+      color: #ffffff;
     }
     .editorial-copy p {
       color: #9e9ea8;
@@ -681,6 +684,7 @@
 
     .iw-stage-card {
       width: 100%;
+      min-width: 0;
       background: rgba(10, 10, 14, 0.75);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
@@ -715,7 +719,7 @@
 
     .iw-viewport {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 36px;
       padding: 40px 48px;
       min-height: 540px;
@@ -728,6 +732,7 @@
     .iw-panel {
       position: relative;
       height: 100%;
+      min-width: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -793,7 +798,9 @@
       max-width: 100%;
       width: auto;
       height: auto;
+      margin: 0 auto;
       object-fit: contain;
+      object-position: center center;
       display: block;
       box-shadow: 0 15px 35px rgba(0,0,0,0.9);
       transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
@@ -806,6 +813,7 @@
       position: relative;
       z-index: 3;
       width: 100%;
+      min-width: 0;
       border-radius: 0 0 6px 6px;
     }
     .iw-deck-header {
@@ -822,6 +830,7 @@
     }
 
     .iw-filmstrip {
+      width: 100%;
       display: flex;
       gap: 16px;
       overflow-x: auto;
@@ -921,7 +930,7 @@
        ========================================== */
     @media (max-width: 960px) {
       .work-Split {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
         gap: 36px;
       }
     }
@@ -970,38 +979,25 @@
       .work-section {
         padding: 84px 20px 72px 20px;
         min-height: auto;
-        overflow-x: clip;
       }
 
-      .work-Split {
-        width: 100%;
-        max-width: 100%;
-        gap: 24px;
-      }
-
-      /* Scale down and contain spiral cascade frames so they never cause horizontal scroll */
       .spiral-cascade-container {
-        width: 120px;
-        height: 120px;
+        width: 150px;
+        height: 150px;
       }
       .cascade-top-right {
-        top: -10px;
-        right: -10px;
+        top: -14px;
+        right: -14px;
       }
       .cascade-bottom-left {
-        bottom: -10px;
-        left: -10px;
-      }
-
-      .artwork-frame {
-        width: 100%;
-        max-width: 100%;
+        bottom: -14px;
+        left: -14px;
       }
 
       .artwork-image-container {
-        height: 42vh;
-        min-height: 250px;
-        max-height: 360px;
+        height: 44vh;
+        min-height: 270px;
+        max-height: 400px;
       }
       .artwork-image-container .view-layer {
         padding: 10px;
@@ -1021,21 +1017,9 @@
         height: 66px;
       }
 
-      .editorial-copy {
-        width: 100%;
-        max-width: 100%;
-        padding: 0 4px;
-      }
       .editorial-copy .index-tag {
         font-size: 0.7rem;
         letter-spacing: 2.5px;
-      }
-      .editorial-copy h2 {
-        font-size: 1.85rem;
-      }
-      .editorial-copy .hook-line {
-        font-size: 1rem;
-        margin-bottom: 16px;
       }
       .editorial-copy p {
         font-size: 0.94rem;
@@ -1054,25 +1038,23 @@
       .iw-section {
         padding: 90px 20px 80px 20px;
         min-height: auto;
-        overflow-x: clip;
       }
       .iw-header-block {
         margin-bottom: 28px;
-        padding: 0 10px;
       }
       .iw-header-block p {
         font-size: 0.92rem;
       }
       .iw-viewport {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
         padding: 20px 16px 36px 16px;
         max-height: none;
         min-height: auto;
         gap: 20px;
       }
       .iw-panel-canvas {
-        height: 280px;
-        max-height: 40vh;
+        height: 300px;
+        max-height: 42vh;
       }
       .iw-deck {
         padding: 14px 16px 18px 16px;
@@ -1102,7 +1084,7 @@
       <a href="journal.html">Studio Journal</a>
       <a href="exhibitions.html">Exhibitions</a>
       <a href="virtual-gallery.html">Virtual Gallery</a>
-      <a href="" target="_blank">Buy Prints</a>
+      <a href="https://www.saatchiart.com/finespraypaintart" target="_blank">Buy Prints</a>
     </div>
   </nav>
 
@@ -1158,7 +1140,6 @@
         <div class="editorial-copy">
           <div class="index-tag">Work 07 • My Wondrous Travels Collection</div>
           <h2>Fantasy Lorain</h2>
-          <div class="hook-line">Where Great Lakes Vapor Meets Romantic Glazing.</div>
           <p>
             Painted from a picture taken on the shores of Lake Erie. Diffused aerosol mist replicates the heavy gold and violet humidity of the Lake Erie shoreline without a single bristle touching the panel.
           </p>
@@ -1206,7 +1187,6 @@
         <div class="editorial-copy">
           <div class="index-tag">Work 08 • My Wondrous Travels Collection</div>
           <h2>Pastoral Pareidolia</h2>
-          <div class="hook-line">Phew! A Barn... Right?</div>
           <p>
             Critics often ask for something "relatable"—a white picket fence, a cat, a BARN in a field. Look closer: there are no doors, no windows, and no timber. Nope, it's just an alien environment exploiting your need for comfort in an alien environment by chance.
           </p>
@@ -1254,7 +1234,6 @@
         <div class="editorial-copy">
           <div class="index-tag">Work 10 • My Wondrous Travels Collection</div>
           <h2>Quiet Light</h2>
-          <div class="hook-line">Celestial Horizons & Blue Vapor.</div>
           <p>
             Painted using various shades of Blue and white paint, and just a touch of color in the orbs. The end result is an Ethereal Landscape during a celestial event.
           </p>
@@ -1302,7 +1281,6 @@
         <div class="editorial-copy">
           <div class="index-tag">Work 11 • My Wondrous Travels Collection</div>
           <h2>Inferno Fields</h2>
-          <div class="hook-line">Commissioned for Infinite Worlds Magazine • Issue #5.</div>
           <p>
             Commissioned by Infinite Worlds Magazine for issue #5, This painting is done on canvas and went far deeper with layers than ever before at this size. It marked a powerful moment for me as an artist. There were many times this painting was almost ruined by errant sprays.
           </p>
@@ -1311,6 +1289,53 @@
           </div>
           <div class="cta-row">
             <a href="mailto:finespraypaintart@gmail.com?subject=Inquire%20About%20Original%20-%20Inferno%20Fields" class="btn-gsp btn-ghost">Inquire about original</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORK 12: GEMSTONE CANYON -->
+    <section class="work-section" id="piece-12">
+      <div class="work-Split">
+        <div class="artwork-frame" id="gemFrame">
+          <div class="spiral-cascade-container cascade-top-right">
+            <div class="cascade-layer l1"></div>
+            <div class="cascade-layer l2"></div>
+            <div class="cascade-layer l3"></div>
+            <div class="cascade-layer l4"></div>
+          </div>
+
+          <div class="artwork-image-container" id="gemCanvas">
+            <div class="view-layer active">
+              <img src="gem 5.jpg" alt="Gemstone Canyon Final">
+            </div>
+            <div class="view-layer">
+              <img src="gem 5.jpg" alt="Gemstone Canyon Buffer">
+            </div>
+            <div class="hover-hint">Tap or hover deck to shift</div>
+          </div>
+          <div class="evolution-deck">
+            <div class="evolution-header">
+              <span>Studio Evolution Deck</span>
+              <span id="gemStageText" class="stage-indicator">Final Image (Pass 5)</span>
+            </div>
+            <div class="evolution-filmstrip" id="gemFilmstrip">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <div class="editorial-copy">
+          <div class="index-tag">Work 12 • My Wondrous Travels Collection</div>
+          <h2>Gemstone Canyon</h2>
+          <p>
+            Commissioned by Infinite Worlds Magazine for the #7 issue. All the colors used were what i had left and by the end i realized i would need to have lens flares and i had to make up how to do this. I risked the whole painting for this effect at the end.
+          </p>
+          <div class="final-specs">
+            Custom Framing Available
+          </div>
+          <div class="cta-row">
+            <a href="mailto:finespraypaintart@gmail.com?subject=Inquire%20About%20Original%20-%20Gemstone%20Canyon" class="btn-gsp btn-ghost">Inquire about original</a>
           </div>
         </div>
       </div>
@@ -1409,7 +1434,6 @@
         <div class="editorial-copy">
           <div class="index-tag">Work 09 • My Wondrous Travels Collection</div>
           <h2>Harbor Sentinel (In Progress)</h2>
-          <div class="hook-line">18" × 48" Panoramic Wood Panel.</div>
           <p>
             Reimagining the iconic Lorain Harbor Lighthouse in a custom atmospheric palette across a four-foot cinematic wood panel. Currently entering the studio queue.
           </p>
@@ -1464,6 +1488,14 @@
       { src: "inferno 3.jpg", label: "Pass 3" },
       { src: "inferno 4.jpg", label: "Pass 4" },
       { src: "inferno 5.jpg", label: "Final Image (Pass 5)" }
+    ];
+
+    const gemPhotos = [
+      { src: "gem 1.jpg", label: "Pass 1" },
+      { src: "gem 2.jpg", label: "Pass 2" },
+      { src: "gem 3.jpg", label: "Pass 3" },
+      { src: "gem 4.jpg", label: "Pass 4" },
+      { src: "gem 5.jpg", label: "Final Image (Pass 5)" }
     ];
 
     const iwIssues = [
@@ -1665,6 +1697,14 @@
         filmstripId: 'infernoFilmstrip',
         labelId: 'infernoStageText',
         photos: infernoPhotos,
+        initialIndex: 4
+      });
+
+      setupController({
+        canvasId: 'gemCanvas',
+        filmstripId: 'gemFilmstrip',
+        labelId: 'gemStageText',
+        photos: gemPhotos,
         initialIndex: 4
       });
 
