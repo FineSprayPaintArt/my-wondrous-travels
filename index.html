@@ -1341,6 +1341,54 @@
       </div>
     </section>
 
+    <!-- WORK 13: FANTASY STAR -->
+    <section class="work-section" id="piece-13">
+      <div class="work-Split">
+        <div class="artwork-frame" id="fsFrame">
+          <div class="spiral-cascade-container cascade-bottom-left">
+            <div class="cascade-layer l1"></div>
+            <div class="cascade-layer l2"></div>
+            <div class="cascade-layer l3"></div>
+            <div class="cascade-layer l4"></div>
+          </div>
+
+          <div class="artwork-image-container" id="fsCanvas">
+            <div class="view-layer active">
+              <img src="fs 5.jpg" alt="Fantasy Star Final">
+            </div>
+            <div class="view-layer">
+              <img src="fs 5.jpg" alt="Fantasy Star Buffer">
+            </div>
+            <div class="hover-hint">Tap or hover deck to shift</div>
+          </div>
+          <div class="evolution-deck">
+            <div class="evolution-header">
+              <span>Studio Evolution Deck</span>
+              <span id="fsStageText" class="stage-indicator">Final Image (Pass 5)</span>
+            </div>
+            <div class="evolution-filmstrip" id="fsFilmstrip">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <div class="editorial-copy">
+          <div class="index-tag">Work 13 • My Wondrous Travels Collection</div>
+          <h2>Fantasy Star</h2>
+          <p>
+            Inspired by the iconic Moravian Star in Bethlehem—The Christmas City. Built across 35+ layers of aerosol mist, with the highest-stakes moment coming at the very end when I had to spray the glowing light ray completely freehand, knowing one errant pass could ruin the entire piece.
+          </p>
+          <div class="final-specs">
+            Custom Framing Available
+          </div>
+          <div class="cta-row">
+            <a href="https://www.saatchiart.com/print/Painting-Fantasy-Star/988458/8336908/view" target="_blank" class="btn-gsp btn-solid">Buy Prints</a>
+            <a href="mailto:finespraypaintart@gmail.com?subject=Inquire%20About%20Original%20-%20Fantasy%20Star" class="btn-gsp btn-ghost">Inquire about original</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- INFINITE WORLDS MAGAZINE SHOWCASE -->
     <section class="iw-section" id="infinite-worlds">
       <div class="iw-watermark-bg">
@@ -1496,6 +1544,14 @@
       { src: "gem 3.jpg", label: "Pass 3" },
       { src: "gem 4.jpg", label: "Pass 4" },
       { src: "gem 5.jpg", label: "Final Image (Pass 5)" }
+    ];
+
+    const fsPhotos = [
+      { src: "fs 1.jpg", label: "Pass 1" },
+      { src: "fs 2.jpg", label: "Pass 2" },
+      { src: "fs 3.jpg", label: "Pass 3" },
+      { src: "fs 4.jpg", label: "Pass 4" },
+      { src: "fs 5.jpg", label: "Final Image (Pass 5)" }
     ];
 
     const iwIssues = [
@@ -1705,6 +1761,14 @@
         filmstripId: 'gemFilmstrip',
         labelId: 'gemStageText',
         photos: gemPhotos,
+        initialIndex: 4
+      });
+
+      setupController({
+        canvasId: 'fsCanvas',
+        filmstripId: 'fsFilmstrip',
+        labelId: 'fsStageText',
+        photos: fsPhotos,
         initialIndex: 4
       });
 
