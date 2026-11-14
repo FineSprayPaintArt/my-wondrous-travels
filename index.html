@@ -1461,10 +1461,10 @@
       </div>
     </section>
 
-    <!-- WORK 09: HARBOR SENTINEL (IN PROGRESS) -->
+    <!-- WORK 09: HARBOR SENTINEL -->
     <section class="work-section" id="piece-09">
       <div class="work-Split">
-        <div class="artwork-frame">
+        <div class="artwork-frame" id="harborFrame">
           <div class="spiral-cascade-container cascade-top-right">
             <div class="cascade-layer l1"></div>
             <div class="cascade-layer l2"></div>
@@ -1472,24 +1472,37 @@
             <div class="cascade-layer l4"></div>
           </div>
 
-          <div class="artwork-image-container">
+          <div class="artwork-image-container" id="harborCanvas">
             <div class="view-layer active">
-              <img src="lorain harbor light house.jpg" alt="Upcoming 18x48 Lighthouse Reference" style="filter: grayscale(30%) contrast(1.1);">
+              <img src="hs 4.jpg" alt="Harbor Sentinel Final">
+            </div>
+            <div class="view-layer">
+              <img src="hs 4.jpg" alt="Harbor Sentinel Buffer">
+            </div>
+            <div class="hover-hint">Tap or hover deck to shift</div>
+          </div>
+          <div class="evolution-deck">
+            <div class="evolution-header">
+              <span>Studio Evolution Deck</span>
+              <span id="harborStageText" class="stage-indicator">Final Image (Pass 4)</span>
+            </div>
+            <div class="evolution-filmstrip" id="harborFilmstrip">
+              <!-- Rendered via JS -->
             </div>
           </div>
         </div>
 
         <div class="editorial-copy">
           <div class="index-tag">Work 09 • My Wondrous Travels Collection</div>
-          <h2>Harbor Sentinel (In Progress)</h2>
+          <h2>Harbor Sentinel</h2>
           <p>
-            Reimagining the iconic Lorain Harbor Lighthouse in a custom atmospheric palette across a four-foot cinematic wood panel. Currently entering the studio queue.
+            Reimagining the iconic Lorain Harbor Lighthouse in a custom atmospheric palette across a four-foot cinematic wood panel, capturing the coastal mist and twilight glow entirely through multi-layer aerosol mist.
           </p>
           <div class="final-specs">
             Custom Framing Available
           </div>
           <div class="cta-row">
-            <a href="mailto:finespraypaintart@gmail.com?subject=Collector%20Preview%20-%20Harbor%20Sentinel" class="btn-gsp btn-solid">Reserve Collector Preview</a>
+            <a href="mailto:finespraypaintart@gmail.com?subject=Inquire%20About%20Original%20-%20Harbor%20Sentinel" class="btn-gsp btn-ghost">Inquire about original</a>
           </div>
         </div>
       </div>
@@ -1552,6 +1565,13 @@
       { src: "fs 3.jpg", label: "Pass 3" },
       { src: "fs 4.jpg", label: "Pass 4" },
       { src: "fs 5.jpg", label: "Final Image (Pass 5)" }
+    ];
+
+    const harborPhotos = [
+      { src: "hs 1.jpg", label: "Pass 1" },
+      { src: "hs 2.jpg", label: "Pass 2" },
+      { src: "hs 3.jpg", label: "Pass 3" },
+      { src: "hs 4.jpg", label: "Final Image (Pass 4)" }
     ];
 
     const iwIssues = [
@@ -1770,6 +1790,14 @@
         labelId: 'fsStageText',
         photos: fsPhotos,
         initialIndex: 4
+      });
+
+      setupController({
+        canvasId: 'harborCanvas',
+        filmstripId: 'harborFilmstrip',
+        labelId: 'harborStageText',
+        photos: harborPhotos,
+        initialIndex: 3
       });
 
       setupIwController();
