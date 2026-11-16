@@ -575,6 +575,47 @@
             font-weight: 700;
         }
 
+        /* Lightbox Cycle Arrows */
+        .lightbox-arrow {
+            position: fixed;
+            top: 45%;
+            transform: translateY(-50%);
+            width: 48px;
+            height: 48px;
+            background: rgba(14, 14, 20, 0.85);
+            border: 1px solid rgba(86, 156, 214, 0.6);
+            border-radius: 50%;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 350;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.25s ease;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+        body.image-focus-active .lightbox-arrow {
+            opacity: 0.85;
+            pointer-events: auto;
+        }
+        .lightbox-arrow:hover {
+            opacity: 1;
+            background: var(--accent-blue);
+            color: #000;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 30px var(--glow-blue);
+            transform: translateY(-50%) scale(1.1);
+        }
+        .lightbox-prev {
+            left: calc(50% - min(42vw, 480px) - 70px);
+        }
+        .lightbox-next {
+            right: calc(50% - min(42vw, 480px) - 70px);
+        }
+
         /* Back to Carousel Deck Button */
         .back-to-cards {
             position: fixed;
@@ -669,6 +710,17 @@
                 padding-left: 24px;
                 padding-right: 24px;
             }
+            .lightbox-prev {
+                left: 16px;
+            }
+            .lightbox-next {
+                right: 16px;
+            }
+            .lightbox-arrow {
+                width: 38px;
+                height: 38px;
+                font-size: 1.2rem;
+            }
         }
 
         footer {
@@ -702,9 +754,11 @@
 
     <!-- Enlarged Lightbox View -->
     <div id="hero-lightbox">
+        <div class="lightbox-arrow lightbox-prev" onclick="cycleLightbox(-1, event)">‹</div>
         <div class="lightbox-frame" onclick="closeHeroLightbox(event)">
             <img id="lightbox-img" src="" alt="Enlarged Focus View">
         </div>
+        <div class="lightbox-arrow lightbox-next" onclick="cycleLightbox(1, event)">›</div>
         <div class="lightbox-caption" id="lightbox-caption"></div>
     </div>
     <div class="back-to-cards" onclick="closeHeroLightbox(event)">✕ Back to Overview</div>
@@ -746,35 +800,35 @@
                 <div class="scrapbook-drawer">
                     <div class="carousel-arrow" onclick="scrollCarousel(this, -1)">‹</div>
                     <div class="carousel-track">
-                        <div class="iw-frosted-card" onclick="openHeroLightbox('exhibit basel 1.jpg', 'Art Basel Miami • Plate 01')">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('exhibit basel 1.jpg', 'Art Basel Miami • Plate 01', this)">
                             <div class="iw-frosted-thumb"><img src="exhibit basel 1.jpg" alt="Art Basel Miami 1"></div>
                             <div class="iw-frosted-meta"><h4>Supercars & Caviar</h4><span>01</span></div>
                         </div>
-                        <div class="iw-frosted-card" onclick="openHeroLightbox('exhibit basel 2.jpg', 'Art Basel Miami • Plate 02')">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('exhibit basel 2.jpg', 'Art Basel Miami • Plate 02', this)">
                             <div class="iw-frosted-thumb"><img src="exhibit basel 2.jpg" alt="Art Basel Miami 2"></div>
                             <div class="iw-frosted-meta"><h4>Gallery Display</h4><span>02</span></div>
                         </div>
-                        <div class="iw-frosted-card" onclick="openHeroLightbox('exhibit basel 3.jpg', 'Art Basel Miami • Plate 03')">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('exhibit basel 3.jpg', 'Art Basel Miami • Plate 03', this)">
                             <div class="iw-frosted-thumb"><img src="exhibit basel 3.jpg" alt="Art Basel Miami 3"></div>
                             <div class="iw-frosted-meta"><h4>Artist Showcase</h4><span>03</span></div>
                         </div>
-                        <div class="iw-frosted-card" onclick="openHeroLightbox('exhibit basel 4.jpg', 'Art Basel Miami • Plate 04')">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('exhibit basel 4.jpg', 'Art Basel Miami • Plate 04', this)">
                             <div class="iw-frosted-thumb"><img src="exhibit basel 4.jpg" alt="Art Basel Miami 4"></div>
                             <div class="iw-frosted-meta"><h4>Curated Space</h4><span>04</span></div>
                         </div>
-                        <div class="iw-frosted-card" onclick="openHeroLightbox('exhibit basel 5.jpg', 'Art Basel Miami • Plate 05')">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('exhibit basel 5.jpg', 'Art Basel Miami • Plate 05', this)">
                             <div class="iw-frosted-thumb"><img src="exhibit basel 5.jpg" alt="Art Basel Miami 5"></div>
                             <div class="iw-frosted-meta"><h4>Wynwood Vista</h4><span>05</span></div>
                         </div>
-                        <div class="iw-frosted-card" onclick="openHeroLightbox('exhibit basel 6.jpg', 'Art Basel Miami • Plate 06')">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('exhibit basel 6.jpg', 'Art Basel Miami • Plate 06', this)">
                             <div class="iw-frosted-thumb"><img src="exhibit basel 6.jpg" alt="Art Basel Miami 6"></div>
                             <div class="iw-frosted-meta"><h4>Opening Night</h4><span>06</span></div>
                         </div>
-                        <div class="iw-frosted-card" onclick="openHeroLightbox('exhibit basel 7.jpg', 'Art Basel Miami • Plate 07')">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('exhibit basel 7.jpg', 'Art Basel Miami • Plate 07', this)">
                             <div class="iw-frosted-thumb"><img src="exhibit basel 7.jpg" alt="Art Basel Miami 7"></div>
                             <div class="iw-frosted-meta"><h4>Reception</h4><span>07</span></div>
                         </div>
-                        <div class="iw-frosted-card" onclick="openHeroLightbox('exhibit basel 8.jpg', 'Art Basel Miami • Plate 08')">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('exhibit basel 8.jpg', 'Art Basel Miami • Plate 08', this)">
                             <div class="iw-frosted-thumb"><img src="exhibit basel 8.jpg" alt="Art Basel Miami 8"></div>
                             <div class="iw-frosted-meta"><h4>Pavilion</h4><span>08</span></div>
                         </div>
@@ -814,23 +868,23 @@
                 <div class="scrapbook-drawer">
                     <div class="carousel-arrow" onclick="scrollCarousel(this, -1)">‹</div>
                     <div class="carousel-track">
-                        <div class="iw-frosted-card" onclick="openHeroLightbox('rooftop soho 3.jpg', 'SoHo Skyline • Plate 01')">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('rooftop soho 3.jpg', 'SoHo Skyline • Plate 01', this)">
                             <div class="iw-frosted-thumb"><img src="rooftop soho 3.jpg" alt="SoHo City Skyline"></div>
                             <div class="iw-frosted-meta"><h4>City Skyline</h4><span>01</span></div>
                         </div>
-                        <div class="iw-frosted-card" onclick="openHeroLightbox('rooftop soho 4.jpg', 'Rooftop Crowd • Plate 02')">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('rooftop soho 4.jpg', 'Rooftop Crowd • Plate 02', this)">
                             <div class="iw-frosted-thumb"><img src="rooftop soho 4.jpg" alt="Rooftop Gathering"></div>
                             <div class="iw-frosted-meta"><h4>Rooftop Crowd</h4><span>02</span></div>
                         </div>
-                        <div class="iw-frosted-card" onclick="openHeroLightbox('rooftop soho 5.jpg', 'Original Artwork Display • Plate 03')">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('rooftop soho 5.jpg', 'Original Artwork Display • Plate 03', this)">
                             <div class="iw-frosted-thumb"><img src="rooftop soho 5.jpg" alt="Original Artwork Showcase"></div>
                             <div class="iw-frosted-meta"><h4>Artwork Display</h4><span>03</span></div>
                         </div>
-                        <div class="iw-frosted-card" onclick="openHeroLightbox('rooftop soho 6.jpg', 'Washington Sq Arch • Plate 04')">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('rooftop soho 6.jpg', 'Washington Sq Arch • Plate 04', this)">
                             <div class="iw-frosted-thumb"><img src="rooftop soho 6.jpg" alt="Washington Square Arch"></div>
                             <div class="iw-frosted-meta"><h4>Washington Sq</h4><span>04</span></div>
                         </div>
-                        <div class="iw-frosted-card" onclick="openHeroLightbox('rooftop soho 7.jpg', 'Empire State Night Vista • Plate 05')">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('rooftop soho 7.jpg', 'Empire State Night Vista • Plate 05', this)">
                             <div class="iw-frosted-thumb"><img src="rooftop soho 7.jpg" alt="Empire State Night Vista"></div>
                             <div class="iw-frosted-meta"><h4>Night Vista</h4><span>05</span></div>
                         </div>
@@ -839,18 +893,44 @@
                 </div>
             </div>
 
-            <!-- 2022 Stratosphere -->
-            <div class="exhibit-card-wrapper reveal-item">
+            <!-- 2022 Stratosphere (Updated with strat 1.jpg to strat 5.jpg) -->
+            <div class="exhibit-card-wrapper reveal-item" data-bg="stratosphere 2.jpg">
                 <div class="spiral-cascade-container cascade-top-right">
                     <div class="cascade-layer l1"></div>
                     <div class="cascade-layer l2"></div>
                 </div>
-                <div class="exhibit-card">
+                <div class="exhibit-card" onclick="openCinematicMode(this)">
                     <div class="exhibit-year">2022</div>
                     <div class="exhibit-content">
                         <h3>Curated & Designed Stratosphere Virtual Gallery</h3>
                         <p>Created the virtual gallery environment on Spatial.io.</p>
                     </div>
+                </div>
+                <div class="scrapbook-drawer">
+                    <div class="carousel-arrow" onclick="scrollCarousel(this, -1)">‹</div>
+                    <div class="carousel-track">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('strat 1.jpg', 'Stratosphere Virtual Gallery • Plate 01', this)">
+                            <div class="iw-frosted-thumb"><img src="strat 1.jpg" alt="Stratosphere 1"></div>
+                            <div class="iw-frosted-meta"><h4>Stratosphere 1</h4><span>01</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('strat 2.jpg', 'Stratosphere Virtual Gallery • Plate 02', this)">
+                            <div class="iw-frosted-thumb"><img src="strat 2.jpg" alt="Stratosphere 2"></div>
+                            <div class="iw-frosted-meta"><h4>Stratosphere 2</h4><span>02</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('strat 3.jpg', 'Stratosphere Virtual Gallery • Plate 03', this)">
+                            <div class="iw-frosted-thumb"><img src="strat 3.jpg" alt="Stratosphere 3"></div>
+                            <div class="iw-frosted-meta"><h4>Stratosphere 3</h4><span>03</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('strat 4.jpg', 'Stratosphere Virtual Gallery • Plate 04', this)">
+                            <div class="iw-frosted-thumb"><img src="strat 4.jpg" alt="Stratosphere 4"></div>
+                            <div class="iw-frosted-meta"><h4>Stratosphere 4</h4><span>04</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('strat 5.jpg', 'Stratosphere Virtual Gallery • Plate 05', this)">
+                            <div class="iw-frosted-thumb"><img src="strat 5.jpg" alt="Stratosphere 5"></div>
+                            <div class="iw-frosted-meta"><h4>Stratosphere 5</h4><span>05</span></div>
+                        </div>
+                    </div>
+                    <div class="carousel-arrow" onclick="scrollCarousel(this, 1)">›</div>
                 </div>
             </div>
 
@@ -915,23 +995,23 @@
                 <div class="scrapbook-drawer">
                     <div class="carousel-arrow" onclick="scrollCarousel(this, -1)">‹</div>
                     <div class="carousel-track">
-                        <div class="iw-frosted-card" onclick="openHeroLightbox('bhg 1.jpg', 'Bethlehem House Gallery • Plate 01')">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('bhg 1.jpg', 'Bethlehem House Gallery • Plate 01', this)">
                             <div class="iw-frosted-thumb"><img src="bhg 1.jpg" alt="Bethlehem House Gallery 1"></div>
                             <div class="iw-frosted-meta"><h4>Winter Show</h4><span>01</span></div>
                         </div>
-                        <div class="iw-frosted-card" onclick="openHeroLightbox('bhg 2.jpg', 'Bethlehem House Gallery • Plate 02')">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('bhg 2.jpg', 'Bethlehem House Gallery • Plate 02', this)">
                             <div class="iw-frosted-thumb"><img src="bhg 2.jpg" alt="Bethlehem House Gallery 2"></div>
                             <div class="iw-frosted-meta"><h4>Gallery View</h4><span>02</span></div>
                         </div>
-                        <div class="iw-frosted-card" onclick="openHeroLightbox('bhg 3.jpg', 'Bethlehem House Gallery • Plate 03')">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('bhg 3.jpg', 'Bethlehem House Gallery • Plate 03', this)">
                             <div class="iw-frosted-thumb"><img src="bhg 3.jpg" alt="Bethlehem House Gallery 3"></div>
                             <div class="iw-frosted-meta"><h4>Exhibition Piece</h4><span>03</span></div>
                         </div>
-                        <div class="iw-frosted-card" onclick="openHeroLightbox('bhg 4.jpg', 'Bethlehem House Gallery • Plate 04')">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('bhg 4.jpg', 'Bethlehem House Gallery • Plate 04', this)">
                             <div class="iw-frosted-thumb"><img src="bhg 4.jpg" alt="Bethlehem House Gallery 4"></div>
                             <div class="iw-frosted-meta"><h4>Featured Wall</h4><span>04</span></div>
                         </div>
-                        <div class="iw-frosted-card" onclick="openHeroLightbox('bhg 5.jpg', 'Bethlehem House Gallery • Plate 05')">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('bhg 5.jpg', 'Bethlehem House Gallery • Plate 05', this)">
                             <div class="iw-frosted-thumb"><img src="bhg 5.jpg" alt="Bethlehem House Gallery 5"></div>
                             <div class="iw-frosted-meta"><h4>Opening Night</h4><span>05</span></div>
                         </div>
@@ -1118,6 +1198,8 @@
         const lightboxCaption = document.getElementById('lightbox-caption');
 
         let savedScrollY = 0;
+        let activeGalleryCards = [];
+        let currentLightboxIndex = 0;
 
         function scrollCarousel(buttonElement, direction) {
             const container = buttonElement.closest('#global-scrapbook-drawer') || buttonElement.closest('.scrapbook-drawer');
@@ -1126,11 +1208,37 @@
             track.scrollBy({ left: direction * scrollDistance, behavior: 'smooth' });
         }
 
-        function openHeroLightbox(src, caption) {
+        function openHeroLightbox(src, caption, cardElement) {
             lightboxImg.src = src;
             lightboxCaption.textContent = caption || '';
             heroLightbox.classList.add('active');
             document.body.classList.add('image-focus-active');
+
+            // Track active gallery items for cycling via arrows
+            if (cardElement) {
+                const drawer = cardElement.closest('#global-scrapbook-drawer');
+                if (drawer) {
+                    activeGalleryCards = Array.from(drawer.querySelectorAll('.iw-frosted-card'));
+                    currentLightboxIndex = activeGalleryCards.indexOf(cardElement);
+                }
+            }
+        }
+
+        function cycleLightbox(direction, event) {
+            if (event) event.stopPropagation();
+            if (!activeGalleryCards.length) return;
+
+            currentLightboxIndex = (currentLightboxIndex + direction + activeGalleryCards.length) % activeGalleryCards.length;
+            const targetCard = activeGalleryCards[currentLightboxIndex];
+            
+            // Extract onclick attributes to get src and caption
+            const onclickAttr = targetCard.getAttribute('onclick');
+            // e.g. openHeroLightbox('strat 1.jpg', 'Stratosphere Virtual Gallery • Plate 01', this)
+            const match = onclickAttr.match(/openHeroLightbox\('(.*?)',\s*'(.*?)'/);
+            if (match) {
+                lightboxImg.src = match[1];
+                lightboxCaption.textContent = match[2];
+            }
         }
 
         function closeHeroLightbox(event) {
