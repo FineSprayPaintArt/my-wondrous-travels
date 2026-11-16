@@ -893,8 +893,8 @@
                 </div>
             </div>
 
-            <!-- 2022 Stratosphere (Updated with strat 1.jpg to strat 5.jpg) -->
-            <div class="exhibit-card-wrapper reveal-item" data-bg="stratosphere 2.jpg">
+            <!-- 2022 Stratosphere (Restored beijing.jpg background) -->
+            <div class="exhibit-card-wrapper reveal-item" data-bg="beijing.jpg">
                 <div class="spiral-cascade-container cascade-top-right">
                     <div class="cascade-layer l1"></div>
                     <div class="cascade-layer l2"></div>
@@ -934,6 +934,63 @@
                 </div>
             </div>
 
+            <!-- 2022 First NFT Section (nft 3.jpg as background, nft 1-2 & nft 4-10 in carousel) -->
+            <div class="exhibit-card-wrapper reveal-item" data-bg="nft 3.jpg">
+                <div class="spiral-cascade-container cascade-bottom-left">
+                    <div class="cascade-layer l1"></div>
+                    <div class="cascade-layer l2"></div>
+                </div>
+                <div class="exhibit-card" onclick="openCinematicMode(this)">
+                    <div class="exhibit-year">2021</div>
+                    <div class="exhibit-content">
+                        <h3>First NFT to Ever Sell In and From a Virtual Gallery</h3>
+                        <p>Historic milestone achievement with 27 NFTs sold in 2021.</p>
+                    </div>
+                </div>
+                <div class="scrapbook-drawer">
+                    <div class="carousel-arrow" onclick="scrollCarousel(this, -1)">‹</div>
+                    <div class="carousel-track">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('nft 1.jpg', 'First NFT Collection • Plate 01', this)">
+                            <div class="iw-frosted-thumb"><img src="nft 1.jpg" alt="NFT 1"></div>
+                            <div class="iw-frosted-meta"><h4>NFT Release 1</h4><span>01</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('nft 2.jpg', 'First NFT Collection • Plate 02', this)">
+                            <div class="iw-frosted-thumb"><img src="nft 2.jpg" alt="NFT 2"></div>
+                            <div class="iw-frosted-meta"><h4>NFT Release 2</h4><span>02</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('nft 4.jpg', 'First NFT Collection • Plate 03', this)">
+                            <div class="iw-frosted-thumb"><img src="nft 4.jpg" alt="NFT 4"></div>
+                            <div class="iw-frosted-meta"><h4>NFT Release 4</h4><span>03</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('nft 5.jpg', 'First NFT Collection • Plate 04', this)">
+                            <div class="iw-frosted-thumb"><img src="nft 5.jpg" alt="NFT 5"></div>
+                            <div class="iw-frosted-meta"><h4>NFT Release 5</h4><span>04</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('nft 6.jpg', 'First NFT Collection • Plate 05', this)">
+                            <div class="iw-frosted-thumb"><img src="nft 6.jpg" alt="NFT 6"></div>
+                            <div class="iw-frosted-meta"><h4>NFT Release 6</h4><span>05</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('nft 7.jpg', 'First NFT Collection • Plate 06', this)">
+                            <div class="iw-frosted-thumb"><img src="nft 7.jpg" alt="NFT 7"></div>
+                            <div class="iw-frosted-meta"><h4>NFT Release 7</h4><span>06</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('nft 8.jpg', 'First NFT Collection • Plate 07', this)">
+                            <div class="iw-frosted-thumb"><img src="nft 8.jpg" alt="NFT 8"></div>
+                            <div class="iw-frosted-meta"><h4>NFT Release 8</h4><span>07</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('nft 9.jpg', 'First NFT Collection • Plate 08', this)">
+                            <div class="iw-frosted-thumb"><img src="nft 9.jpg" alt="NFT 9"></div>
+                            <div class="iw-frosted-meta"><h4>NFT Release 9</h4><span>08</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('nft 10.jpg', 'First NFT Collection • Plate 09', this)">
+                            <div class="iw-frosted-thumb"><img src="nft 10.jpg" alt="NFT 10"></div>
+                            <div class="iw-frosted-meta"><h4>NFT Release 10</h4><span>09</span></div>
+                        </div>
+                    </div>
+                    <div class="carousel-arrow" onclick="scrollCarousel(this, 1)">›</div>
+                </div>
+            </div>
+
             <!-- 2022 Beijing Featured Show -->
             <div class="exhibit-card-wrapper reveal-item" data-bg="Beijing me.jpg">
                 <div class="spiral-cascade-container cascade-bottom-left">
@@ -960,21 +1017,6 @@
                     <div class="exhibit-content">
                         <h3>Featured Explore Tab Spatial Gallery Artist</h3>
                         <p>Featured artist on the Spatial Explore tab.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 2021 First NFT -->
-            <div class="exhibit-card-wrapper reveal-item">
-                <div class="spiral-cascade-container cascade-bottom-left">
-                    <div class="cascade-layer l1"></div>
-                    <div class="cascade-layer l2"></div>
-                </div>
-                <div class="exhibit-card">
-                    <div class="exhibit-year">2021</div>
-                    <div class="exhibit-content">
-                        <h3>First NFT to Ever Sell In and From a Virtual Gallery</h3>
-                        <p>Historic milestone achievement with 27 NFTs sold in 2021.</p>
                     </div>
                 </div>
             </div>
@@ -1231,9 +1273,7 @@
             currentLightboxIndex = (currentLightboxIndex + direction + activeGalleryCards.length) % activeGalleryCards.length;
             const targetCard = activeGalleryCards[currentLightboxIndex];
             
-            // Extract onclick attributes to get src and caption
             const onclickAttr = targetCard.getAttribute('onclick');
-            // e.g. openHeroLightbox('strat 1.jpg', 'Stratosphere Virtual Gallery • Plate 01', this)
             const match = onclickAttr.match(/openHeroLightbox\('(.*?)',\s*'(.*?)'/);
             if (match) {
                 lightboxImg.src = match[1];
@@ -1283,7 +1323,6 @@
                         cinematicBg.style.backgroundImage = `url('${customBg}')`;
                     }
 
-                    // Populate the fixed bottom global drawer if this card has thumbnails
                     if (cardDrawer) {
                         globalDrawer.innerHTML = cardDrawer.innerHTML;
                         globalDrawer.classList.add('active');
