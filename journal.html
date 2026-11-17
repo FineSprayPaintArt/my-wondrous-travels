@@ -249,6 +249,12 @@
             bottom: -15px;
             left: -15px;
         }
+        .feature-spiral {
+            width: 320px;
+            height: 320px;
+            top: -45px;
+            right: -45px;
+        }
 
         .cascade-layer {
             position: absolute;
@@ -290,11 +296,13 @@
 
         .exhibit-card-wrapper:hover .cascade-top-right .l1,
         .exhibit-card-wrapper:hover .cascade-bottom-left .l1,
-        .reel-card:hover .cascade-top-right .l1 {
+        .reel-card:hover .cascade-top-right .l1,
+        .feature-banner:hover .cascade-top-right .l1 {
             box-shadow: 0 0 24px var(--glow-blue);
             border-color: rgba(86, 156, 214, 0.8);
         }
-        .exhibit-card-wrapper:hover .cascade-top-right .l2 {
+        .exhibit-card-wrapper:hover .cascade-top-right .l2,
+        .feature-banner:hover .cascade-top-right .l2 {
             transform: translate3d(16px, -12px, 0) scale(0.82) rotate(60deg);
             opacity: 0.85;
             box-shadow: 0 0 20px var(--glow-blue);
@@ -977,7 +985,7 @@
             }
 
             footer {
-                padding: 40px 20px calc(40px + env(safe-area-inset-bottom, 0px)) 20px;
+                padding: 40px 20px calc(40px + env(safe-axis-inset-bottom, 0px)) 20px;
                 font-size: 0.72rem;
             }
         }
@@ -986,8 +994,8 @@
 <body>
 
     <!-- Unified Cinematic Media Layer -->
-    <div id="cinematic-media-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; opacity: 0; pointer-events: none; z-index: 5; overflow: hidden;">
-        <div id="cinematic-bg" style="width: 100%; height: 100%; background-size: contain; background-repeat: no-repeat; background-position: center; display: block;"></div>
+    <div id="cinematic-media-container">
+        <div id="cinematic-bg"></div>
     </div>
 
     <!-- Global Viewport-Bottom Image Bar -->
@@ -1003,6 +1011,8 @@
         <div class="lightbox-caption" id="lightbox-caption"></div>
     </div>
     <div class="back-to-cards" onclick="closeHeroLightbox(event)">✕ Back to Overview</div>
+
+    <div class="close-cinematic" onclick="closeCinematicMode(event)">✕ Close Focus Mode</div>
 
     <!-- MINIMALIST FLOATING HEADER -->
     <nav>
@@ -1219,13 +1229,13 @@
         </div>
 
         <div class="timeline-feed">
-            <!-- Juxtahub, Resident Artist Section (New) -->
+            <!-- Juxtahub, Resident Artist Section -->
             <div class="exhibit-card-wrapper reveal-item" data-bg="jux 1.jpg">
                 <div class="spiral-cascade-container cascade-top-right">
                     <div class="cascade-layer l1"></div>
                     <div class="cascade-layer l2"></div>
                 </div>
-                <div class="exhibit-card">
+                <div class="exhibit-card" onclick="openCinematicMode(this)">
                     <div class="exhibit-year">Residency</div>
                     <div class="exhibit-content">
                         <h3>Juxtahub, Resident Artist</h3>
@@ -1281,7 +1291,7 @@
                     <div class="cascade-layer l1"></div>
                     <div class="cascade-layer l2"></div>
                 </div>
-                <div class="exhibit-card">
+                <div class="exhibit-card" onclick="openCinematicMode(this)">
                     <div class="exhibit-year">Residency</div>
                     <div class="exhibit-content">
                         <h3>Banana Factory, Resident Artist</h3>
@@ -1358,6 +1368,7 @@
         const lightboxImg = document.getElementById('lightbox-img');
         const lightboxCaption = document.getElementById('lightbox-caption');
 
+        let savedScrollY = 0;
         let activeGalleryCards = [];
         let currentLightboxIndex = 0;
 
@@ -1404,6 +1415,67 @@
             document.body.classList.remove('image-focus-active');
         }
 
+        function openCinematicMode(cardElement) {
+            const wrapper = cardElement.closest('.exhibit-card-wrapper');
+            const customBg = wrapper.getAttribute('data-bg');
+            const cardDrawer = wrapper.querySelector('.scrapbook-drawer');
+
+            if (!customBg) return;
+
+            const isOpen = wrapper.classList.contains('cinematic-open');
+
+            document.querySelectorAll('.exhibit-card-wrapper').forEach(item => {
+                item.classList.remove('cinematic-open');
+            });
+            document.body.classList.remove('cinematic-active');
+            document.documentElement.classList.remove('cinematic-locked');
+            globalDrawer.classList.remove('active');
+            closeHeroLightbox();
+
+            if (!isOpen) {
+                savedScrollY = window.scrollY;
+                mediaContainer.classList.add('mist-flash');
+
+                setTimeout(() => {
+                    cinematicBg.style.backgroundImage = `url('${customBg}')`;
+
+                    if (cardDrawer) {
+                        globalDrawer.innerHTML = cardDrawer.innerHTML;
+                        globalDrawer.classList.add('active');
+                    } else {
+                        globalDrawer.innerHTML = '';
+                        globalDrawer.classList.remove('active');
+                    }
+
+                    mediaContainer.classList.remove('mist-flash');
+                    wrapper.classList.add('cinematic-open');
+                    document.body.classList.add('cinematic-active');
+                    document.documentElement.classList.add('cinematic-locked');
+                }, 180);
+            }
+        }
+
+        function closeCinematicMode(event) {
+            if (event) event.stopPropagation();
+            closeHeroLightbox();
+            globalDrawer.classList.remove('active');
+            document.body.classList.remove('cinematic-active');
+            document.documentElement.classList.remove('cinematic-locked');
+            document.querySelectorAll('.exhibit-card-wrapper').forEach(item => {
+                item.classList.remove('cinematic-open');
+            });
+            mediaContainer.classList.remove('mist-flash');
+            window.scrollTo({ top: savedScrollY, behavior: 'instant' });
+        }
+
+        mediaContainer.addEventListener('click', (e) => {
+            if (document.body.classList.contains('image-focus-active')) {
+                closeHeroLightbox(e);
+            } else {
+                closeCinematicMode(e);
+            }
+        });
+
         document.addEventListener("DOMContentLoaded", () => {
             document.querySelectorAll('.reel-card').forEach(card => {
                 const video = card.querySelector('video');
@@ -1441,6 +1513,25 @@
                         card.classList.remove('is-playing');
                     }
                 });
+            });
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal-item').forEach(el => {
+                observer.observe(el);
             });
         });
     </script>
