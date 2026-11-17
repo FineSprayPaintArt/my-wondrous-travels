@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Studio Journal | My Wondrous Travels</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exhibitions & Publications | My Wondrous Travels</title>
     <style>
         :root {
             --bg: #010103;
-            --panel-bg: #0e0e12;
+            --panel-bg: rgba(14, 14, 18, 0.65);
             --text: #eaeaf2;
-            --muted: #75757e;
+            --muted: #95959e;
             --accent: #569cd6;
             --glow: rgba(86, 156, 214, 0.4);
             
@@ -22,6 +22,13 @@
         html {
             overflow-y: scroll;
             scrollbar-gutter: stable;
+        }
+
+        /* Completely remove vertical scrollbar during Focus Mode */
+        html.cinematic-locked,
+        body.cinematic-active {
+            overflow: hidden !important;
+            scrollbar-gutter: auto !important;
         }
 
         body {
@@ -55,7 +62,84 @@
             z-index: 99;
         }
 
-        /* Nav matching index.html */
+        /* Cinematic Backdrop Media Container */
+        #cinematic-media-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
+            z-index: 5;
+            overflow: hidden;
+        }
+
+        #cinematic-bg {
+            width: 100%;
+            height: 100%;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            filter: brightness(0.75) contrast(1.1);
+            display: block;
+        }
+
+        #cinematic-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: cover;
+            filter: brightness(0.7) contrast(1.15) saturate(1.1);
+            display: none;
+        }
+
+        /* Atmospheric Vignette Overlay */
+        #cinematic-media-container::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, transparent 35%, rgba(1, 1, 3, 0.85) 90%);
+            pointer-events: none;
+        }
+
+        #cinematic-media-container.mist-flash {
+            opacity: 0 !important;
+            filter: brightness(1.8) contrast(1.4) blur(10px);
+        }
+
+        body.cinematic-active #cinematic-media-container {
+            opacity: 1;
+            pointer-events: auto;
+            cursor: pointer;
+        }
+
+        /* Fade out timeline & header during cinematic mode */
+        body.cinematic-active .exhibitions-container,
+        body.cinematic-active footer {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        body.cinematic-active nav {
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        /* Hide spiral boxes completely when Focus Mode is open */
+        body.cinematic-active .spiral-cascade-container {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+        }
+
+        /* Nav */
         nav {
             position: fixed;
             top: 0;
@@ -68,8 +152,8 @@
             z-index: 100;
             background: rgba(1, 1, 3, 0.75);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: opacity 0.5s ease;
         }
         .brand-mark {
             font-size: 1.1rem;
@@ -99,49 +183,122 @@
             text-shadow: 0 0 12px var(--glow-blue);
         }
 
-        /* Journal Container & Grid Layout */
-        .journal-container {
-            max-width: 1440px;
-            margin: 140px auto 60px auto;
+        /* Container & Header */
+        .exhibitions-container {
+            max-width: 1200px;
+            margin: 140px auto 120px auto;
             padding: 0 48px;
             width: 100%;
             flex: 1;
-            overflow-x: clip;
+            position: relative;
+            z-index: 10;
+            transition: opacity 0.4s ease;
         }
-        .journal-header {
-            margin-bottom: 40px;
+        .exhibitions-header {
+            margin-bottom: 60px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 30px;
         }
-        .journal-header h1 {
+        .exhibitions-header h1 {
             font-size: clamp(2rem, 4vw, 3.2rem);
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: -1px;
             margin-bottom: 12px;
         }
-        .journal-header p {
+        .exhibitions-header p {
             color: var(--muted);
             font-size: 0.95rem;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
 
-        .journal-row {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 28px;
-            margin-bottom: 34px;
+        /* Timeline Feed */
+        .timeline-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
         }
 
-        /* =======================================================
-           EXHIBITIONS-STYLE SECTION WRAPPER & CAROUSEL DRAWER
-        ======================================================= */
         .exhibit-card-wrapper {
             position: relative;
-            margin-bottom: 36px;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Fixed Anchor Spiral Cascade */
+        .spiral-cascade-container {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            pointer-events: none;
+            z-index: 1;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .cascade-top-right {
+            top: -15px;
+            right: -15px;
+        }
+        .cascade-bottom-left {
+            bottom: -15px;
+            left: -15px;
+        }
+
+        .cascade-layer {
+            position: absolute;
+            inset: 0;
+            border: 1px solid rgba(86, 156, 214, 0.4);
+            background: linear-gradient(135deg, rgba(86, 156, 214, 0.16), transparent 75%);
+            box-shadow: 0 0 16px rgba(86, 156, 214, 0.4);
+            border-radius: 2px;
+            transform-origin: center center;
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.5s ease,
+                        box-shadow 0.5s ease,
+                        border-color 0.5s ease;
+        }
+
+        .cascade-top-right .l1 {
+            transform: translate3d(0, 0, 0) scale(1) rotate(45deg);
+            opacity: 0.95;
+            z-index: 2;
+        }
+        .cascade-top-right .l2 {
+            transform: translate3d(12px, -9px, 0) scale(0.78) rotate(58deg);
+            opacity: 0.65;
+            z-index: 1;
+        }
+
+        .cascade-bottom-left .l1 {
+            transform: translate3d(0, 0, 0) scale(1) rotate(45deg);
+            background: linear-gradient(315deg, rgba(86, 156, 214, 0.16), transparent 75%);
+            opacity: 0.95;
+            z-index: 2;
+        }
+        .cascade-bottom-left .l2 {
+            transform: translate3d(-12px, 9px, 0) scale(0.78) rotate(32deg);
+            background: linear-gradient(315deg, rgba(86, 156, 214, 0.16), transparent 75%);
+            opacity: 0.65;
+            z-index: 1;
+        }
+
+        .exhibit-card-wrapper:hover .cascade-top-right .l1,
+        .exhibit-card-wrapper:hover .cascade-bottom-left .l1 {
+            box-shadow: 0 0 24px var(--glow-blue);
+            border-color: rgba(86, 156, 214, 0.8);
+        }
+        .exhibit-card-wrapper:hover .cascade-top-right .l2 {
+            transform: translate3d(16px, -12px, 0) scale(0.82) rotate(60deg);
+            opacity: 0.85;
+            box-shadow: 0 0 20px var(--glow-blue);
+        }
+        .exhibit-card-wrapper:hover .cascade-bottom-left .l2 {
+            transform: translate3d(-16px, 12px, 0) scale(0.82) rotate(30deg);
+            opacity: 0.85;
+            box-shadow: 0 0 20px var(--glow-blue);
         }
 
         .exhibit-card {
-            background: rgba(14, 14, 18, 0.65);
+            background: var(--panel-bg);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.15);
             border-radius: 4px;
@@ -154,7 +311,7 @@
             cursor: pointer;
             position: relative;
             z-index: 2;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
         }
         .exhibit-card:hover {
             border-color: var(--accent-blue);
@@ -187,21 +344,59 @@
             letter-spacing: 1px;
         }
 
-        /* Scrapbook Drawer (Embedded under banner, matching Exhibitions style) */
-        .scrapbook-drawer {
-            margin-top: 12px;
+        .exhibit-content a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--accent);
+            transition: color 0.2s, text-shadow 0.2s;
+        }
+        .exhibit-content a:hover {
+            color: var(--accent-blue);
+            text-shadow: 0 0 8px var(--glow-blue);
+        }
+
+        /* Keep inline card drawers hidden as data templates */
+        .exhibit-card-wrapper .scrapbook-drawer {
+            display: none !important;
+        }
+
+        /* Global Bottom-Locked Scrapbook Drawer (Lives directly on <body>) */
+        #global-scrapbook-drawer {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            margin: 0;
+            width: min(1140px, 96vw);
+            height: 135px;
             background: rgba(4, 4, 8, 0.92);
             backdrop-filter: blur(14px);
             border: 1px solid rgba(86, 156, 214, 0.45);
-            border-radius: 6px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.85), 0 0 30px rgba(86, 156, 214, 0.15);
-            padding: 12px 16px;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            box-shadow: 0 -10px 50px rgba(0,0,0,0.95), 0 0 40px rgba(86, 156, 214, 0.2);
+            padding: 8px 14px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
-            position: relative;
-            z-index: 10;
+            gap: 10px;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.35s ease, visibility 0.35s ease;
+            z-index: 250;
+        }
+
+        #global-scrapbook-drawer.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        body.image-focus-active #global-scrapbook-drawer {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
         }
 
         .carousel-arrow {
@@ -421,7 +616,7 @@
             right: calc(50% - min(42vw, 480px) - 70px);
         }
 
-        /* Back to Overview Button */
+        /* Back to Carousel Deck Button */
         .back-to-cards {
             position: fixed;
             bottom: 24px;
@@ -454,734 +649,700 @@
             pointer-events: auto;
         }
 
-        /* =======================================================
-           SEQUENTIAL SPIRAL CASCADE (AEROSOL LAYERING EFFECT)
-        ======================================================= */
-        .spiral-cascade-container {
-            position: absolute;
-            width: 220px;
-            height: 220px;
-            pointer-events: none;
-            z-index: -1;
-        }
-        .cascade-top-right {
-            top: -25px;
-            right: -25px;
-        }
-        .cascade-bottom-left {
-            bottom: -25px;
-            left: -25px;
-        }
-        .feature-spiral {
-            width: 320px;
-            height: 320px;
-            top: -45px;
-            right: -45px;
-        }
-
-        .cascade-layer {
-            position: absolute;
-            inset: 0;
-            border: 1px solid rgba(86, 156, 214, 0.4);
-            background: linear-gradient(135deg, rgba(86, 156, 214, 0.16), transparent 75%);
-            box-shadow: 0 0 25px rgba(86, 156, 214, 0.4);
-            border-radius: 2px;
-            transform-origin: center center;
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-                        opacity 0.6s ease,
-                        box-shadow 0.6s ease,
-                        border-color 0.6s ease;
-        }
-
-        /* Top-Right Spiral Vector */
-        .cascade-top-right .l1 {
-            transform: translate3d(0, 0, 0) scale(1) rotate(45deg);
-            opacity: 0.95;
-            z-index: 4;
-        }
-        .cascade-top-right .l2 {
-            transform: translate3d(20px, -15px, 0) scale(0.78) rotate(58deg);
-            opacity: 0.7;
-            z-index: 3;
-        }
-        .cascade-top-right .l3 {
-            transform: translate3d(38px, -28px, 0) scale(0.58) rotate(72deg);
-            opacity: 0.48;
-            z-index: 2;
-        }
-        .cascade-top-right .l4 {
-            transform: translate3d(52px, -38px, 0) scale(0.40) rotate(88deg);
-            opacity: 0.28;
-            z-index: 1;
-        }
-
-        /* Bottom-Left Spiral Vector */
-        .cascade-bottom-left .l1 {
-            transform: translate3d(0, 0, 0) scale(1) rotate(45deg);
-            background: linear-gradient(315deg, rgba(86, 156, 214, 0.16), transparent 75%);
-            opacity: 0.95;
-            z-index: 4;
-        }
-        .cascade-bottom-left .l2 {
-            transform: translate3d(-20px, 15px, 0) scale(0.78) rotate(32deg);
-            background: linear-gradient(315deg, rgba(86, 156, 214, 0.16), transparent 75%);
-            opacity: 0.7;
-            z-index: 3;
-        }
-        .cascade-bottom-left .l3 {
-            transform: translate3d(-38px, 28px, 0) scale(0.58) rotate(18deg);
-            background: linear-gradient(315deg, rgba(86, 156, 214, 0.16), transparent 75%);
-            opacity: 0.48;
-            z-index: 2;
-        }
-        .cascade-bottom-left .l4 {
-            transform: translate3d(-52px, 38px, 0) scale(0.40) rotate(2deg);
-            background: linear-gradient(315deg, rgba(86, 156, 214, 0.16), transparent 75%);
-            opacity: 0.28;
-            z-index: 1;
-        }
-
-        /* Hover & Active Touch Expansion */
-        .reel-card:hover .cascade-top-right .l1,
-        .reel-card.is-playing .cascade-top-right .l1,
-        .feature-banner:hover .cascade-top-right .l1,
-        .exhibit-card:hover .cascade-top-right .l1 {
-            box-shadow: 0 0 35px var(--glow-blue);
-            border-color: rgba(86, 156, 214, 0.8);
-        }
-        .reel-card:hover .cascade-top-right .l2,
-        .reel-card.is-playing .cascade-top-right .l2,
-        .feature-banner:hover .cascade-top-right .l2,
-        .exhibit-card:hover .cascade-top-right .l2 {
-            transform: translate3d(28px, -20px, 0) scale(0.82) rotate(60deg);
-            opacity: 0.85;
-            box-shadow: 0 0 30px var(--glow-blue);
-        }
-        .reel-card:hover .cascade-top-right .l3,
-        .reel-card.is-playing .cascade-top-right .l3,
-        .feature-banner:hover .cascade-top-right .l3,
-        .exhibit-card:hover .cascade-top-right .l3 {
-            transform: translate3d(50px, -36px, 0) scale(0.64) rotate(76deg);
-            opacity: 0.65;
-            box-shadow: 0 0 25px var(--glow-blue);
-        }
-        .reel-card:hover .cascade-top-right .l4,
-        .reel-card.is-playing .cascade-top-right .l4,
-        .feature-banner:hover .cascade-top-right .l4,
-        .exhibit-card:hover .cascade-top-right .l4 {
-            transform: translate3d(70px, -50px, 0) scale(0.46) rotate(94deg);
-            opacity: 0.45;
-            box-shadow: 0 0 20px var(--glow-blue);
-        }
-
-        .reel-card:hover .cascade-bottom-left .l1,
-        .reel-card.is-playing .cascade-bottom-left .l1,
-        .exhibit-card:hover .cascade-bottom-left .l1 {
-            box-shadow: 0 0 35px var(--glow-blue);
-            border-color: rgba(86, 156, 214, 0.8);
-        }
-        .reel-card:hover .cascade-bottom-left .l2,
-        .reel-card.is-playing .cascade-bottom-left .l2,
-        .exhibit-card:hover .cascade-bottom-left .l2 {
-            transform: translate3d(-28px, 20px, 0) scale(0.82) rotate(30deg);
-            opacity: 0.85;
-            box-shadow: 0 0 30px var(--glow-blue);
-        }
-        .reel-card:hover .cascade-bottom-left .l3,
-        .reel-card.is-playing .cascade-bottom-left .l3,
-        .exhibit-card:hover .cascade-bottom-left .l3 {
-            transform: translate3d(-50px, 36px, 0) scale(0.64) rotate(14deg);
-            opacity: 0.65;
-            box-shadow: 0 0 25px var(--glow-blue);
-        }
-        .reel-card:hover .cascade-bottom-left .l4,
-        .reel-card.is-playing .cascade-bottom-left .l4,
-        .exhibit-card:hover .cascade-bottom-left .l4 {
-            transform: translate3d(-70px, 50px, 0) scale(0.46) rotate(-2deg);
-            opacity: 0.45;
-            box-shadow: 0 0 20px var(--glow-blue);
-        }
-
-        /* Reel Cards */
-        .reel-card {
-            background: var(--panel-bg);
-            border: 1px solid rgba(255,255,255,0.1);
+        /* Close Button Fixed */
+        .close-cinematic {
+            position: fixed;
+            top: 32px;
+            right: 48px;
+            background: var(--accent-blue);
+            color: #000;
+            padding: 12px 24px;
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
             border-radius: 4px;
-            position: relative;
-            overflow: visible;
-            aspect-ratio: 9/16;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            z-index: 400;
+            box-shadow: 0 0 25px var(--glow-blue);
+            border: 1px solid rgba(255,255,255,0.3);
         }
-        .reel-card:hover,
-        .reel-card.is-playing {
-            border-color: var(--accent-blue);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.95), 0 0 40px 8px var(--glow-blue);
-            transform: translateY(-6px);
+        .close-cinematic:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 35px var(--glow-blue);
         }
-        .reel-video-wrap {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            overflow: hidden;
-            border-radius: 4px;
-            z-index: 2;
-            background: #050508;
+        body.cinematic-active .close-cinematic {
+            opacity: 1;
+            pointer-events: auto;
         }
-        .reel-card video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            opacity: 0.75;
-            transition: opacity 0.3s ease;
+
+        /* Reveal items */
+        .reveal-item {
+            opacity: 0;
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .reel-card:hover video,
-        .reel-card.is-playing video {
+        .reveal-item.active {
             opacity: 1;
         }
-        .reel-info {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 20px;
-            background: linear-gradient(to top, rgba(1,1,3,0.95) 0%, rgba(1,1,3,0) 100%);
-            pointer-events: none;
-            z-index: 3;
-        }
-        .reel-info h3 {
-            margin: 0 0 4px 0;
-            font-size: 0.85rem;
-            letter-spacing: 2px;
-            font-weight: 700;
-            color: #fff;
-        }
-        .reel-info p {
-            margin: 0;
-            font-size: 0.75rem;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+
+        @media (max-width: 900px) {
+            .exhibit-card {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                padding: 24px;
+            }
+            #global-scrapbook-drawer {
+                width: 100vw;
+                padding: 8px 10px;
+                bottom: 0;
+                border-radius: 0;
+            }
+            .iw-frosted-card {
+                flex: 0 0 115px;
+            }
+            .iw-frosted-thumb {
+                height: 64px;
+            }
+            .exhibitions-container, nav, footer {
+                padding-left: 24px;
+                padding-right: 24px;
+            }
+            .lightbox-prev {
+                left: 16px;
+            }
+            .lightbox-next {
+                right: 16px;
+            }
+            .lightbox-arrow {
+                width: 38px;
+                height: 38px;
+                font-size: 1.2rem;
+            }
         }
 
-        /* Feature Film Banner (Styled like Finger Laced Crown) */
-        .feature-banner {
-            background: var(--panel-bg);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 4px;
-            padding: 50px;
-            display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            gap: 50px;
-            align-items: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-            position: relative;
-            overflow: visible;
-            margin-top: 36px;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .feature-banner:hover {
-            border-color: var(--accent-blue);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.95), 0 0 40px 8px var(--glow-blue);
-        }
-        .feature-copy {
-            position: relative;
-            z-index: 2;
-        }
-        .feature-copy span {
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: var(--accent);
-            display: block;
-            margin-bottom: 12px;
-            transition: all 0.3s ease;
-        }
-        .feature-banner:hover .feature-copy span {
-            color: var(--accent-blue);
-            text-shadow: 0 0 10px var(--glow-blue);
-        }
-        .feature-copy h2 {
-            font-size: clamp(2rem, 3.5vw, 2.8rem);
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: -1px;
-            margin-bottom: 16px;
-            color: #fff;
-        }
-        .feature-copy p {
-            color: var(--muted);
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-bottom: 28px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .feature-visual {
-            position: relative;
-            aspect-ratio: 16/9;
-            width: 100%;
-            background: linear-gradient(to bottom, rgba(3,3,5,0.3), rgba(3,3,5,0.6)), url('bf 8.jpg') center/cover no-repeat;
-            border-radius: 2px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            border: 1px solid rgba(255,255,255,0.15);
-            overflow: hidden;
-            z-index: 2;
-            cursor: pointer;
-            transition: transform 0.4s ease, border-color 0.4s ease;
-        }
-        .feature-visual:hover {
-            transform: scale(1.02);
-            border-color: var(--accent-blue);
-        }
-
-        /* Footer */
         footer {
             padding: 60px 48px;
             border-top: 1px solid rgba(255,255,255,0.08);
             display: flex;
-            justify-content: center;
-            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
             font-size: 0.8rem;
             color: var(--muted);
             text-transform: uppercase;
             letter-spacing: 2px;
             background: #020204;
-            text-align: center;
-        }
-
-        /* ==========================================
-           RESPONSIVE MOBILE & TABLET OPTIMIZATION
-           ========================================== */
-        @media (max-width: 1100px) {
-            .journal-row {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 22px;
-            }
-            .feature-banner {
-                grid-template-columns: 1fr;
-                gap: 30px;
-                padding: 36px;
-            }
-        }
-
-        @media (max-width: 900px) {
-            nav {
-                padding: 16px 20px;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-            }
-            .brand-mark {
-                font-size: 0.95rem;
-                letter-spacing: 2px;
-            }
-            .nav-links {
-                width: 100%;
-                gap: 18px;
-                overflow-x: auto;
-                white-space: nowrap;
-                padding-bottom: 4px;
-                scrollbar-width: none;
-                -webkit-overflow-scrolling: touch;
-            }
-            .nav-links::-webkit-scrollbar {
-                display: none;
-            }
-            .nav-links a {
-                font-size: 0.72rem;
-                letter-spacing: 1.5px;
-            }
-
-            .journal-container {
-                margin: 125px auto 48px auto;
-                padding: 0 20px;
-            }
-            .journal-header {
-                margin-bottom: 28px;
-            }
-            .journal-header h1 {
-                font-size: 1.9rem;
-            }
-            .journal-header p {
-                font-size: 0.8rem;
-                line-height: 1.4;
-            }
-
-            .journal-row {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 16px;
-                margin-bottom: 16px;
-            }
-
-            .spiral-cascade-container {
-                width: 110px;
-                height: 110px;
-            }
-            .cascade-top-right {
-                top: -10px;
-                right: -10px;
-            }
-            .cascade-bottom-left {
-                bottom: -10px;
-                left: -10px;
-            }
-            .feature-spiral {
-                width: 150px;
-                height: 150px;
-                top: -14px;
-                right: -14px;
-            }
-
-            .reel-info {
-                padding: 14px 12px;
-            }
-            .reel-info h3 {
-                font-size: 0.72rem;
-                letter-spacing: 1.2px;
-            }
-            .reel-info p {
-                font-size: 0.64rem;
-                line-height: 1.3;
-            }
-
-            .feature-banner {
-                padding: 24px 20px;
-                gap: 24px;
-                margin-top: 28px;
-            }
-            .feature-copy h2 {
-                font-size: 1.75rem;
-            }
-            .feature-copy p {
-                font-size: 0.84rem;
-                margin-bottom: 20px;
-            }
-
-            footer {
-                padding: 40px 20px calc(40px + env(safe-area-inset-bottom, 0px)) 20px;
-                font-size: 0.72rem;
-            }
+            transition: opacity 0.5s ease;
         }
     </style>
 </head>
 <body>
 
+    <!-- Unified Cinematic Media Layer -->
+    <div id="cinematic-media-container">
+        <div id="cinematic-bg"></div>
+        <video id="cinematic-video" muted loop playsinline preload="auto">
+            <source src="rooftop soho 2.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <!-- Global Viewport-Bottom Image Bar (Never Moves Position) -->
+    <div id="global-scrapbook-drawer" onclick="event.stopPropagation()"></div>
+
     <!-- Enlarged Lightbox View -->
-    <div id="hero-lightbox" style="position: fixed; top: 45%; left: 50%; transform: translate(-50%, -50%) scale(0.92); max-width: 85vw; max-height: 75vh; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 300; opacity: 0; pointer-events: none; transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1), transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);">
-        <div class="lightbox-arrow lightbox-prev" onclick="cycleLightbox(-1, event)" style="position: fixed; top: 45%; transform: translateY(-50%); left: calc(50% - min(42vw, 480px) - 70px); width: 48px; height: 48px; background: rgba(14, 14, 20, 0.85); border: 1px solid rgba(86, 156, 214, 0.6); border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; z-index: 350; opacity: 0.85; transition: all 0.25s ease;">‹</div>
-        <div class="lightbox-frame" onclick="closeHeroLightbox(event)" style="background: rgba(8, 8, 12, 0.75); backdrop-filter: blur(14px); border: 1px solid rgba(86, 156, 214, 0.5); box-shadow: 0 40px 100px rgba(0,0,0,0.95), 0 0 60px 10px var(--glow-blue); border-radius: 4px; padding: 16px; max-height: 70vh; display: flex; justify-content: center; align-items: center; cursor: pointer; position: relative;">
-            <img id="lightbox-img" src="" alt="Enlarged Focus View" style="max-height: 65vh; max-width: 80vw; width: auto; height: auto; object-fit: contain; display: block; border-radius: 2px;">
+    <div id="hero-lightbox">
+        <div class="lightbox-arrow lightbox-prev" onclick="cycleLightbox(-1, event)">‹</div>
+        <div class="lightbox-frame" onclick="closeHeroLightbox(event)">
+            <img id="lightbox-img" src="" alt="Enlarged Focus View">
         </div>
-        <div class="lightbox-arrow lightbox-next" onclick="cycleLightbox(1, event)" style="position: fixed; top: 45%; transform: translateY(-50%); right: calc(50% - min(42vw, 480px) - 70px); width: 48px; height: 48px; background: rgba(14, 14, 20, 0.85); border: 1px solid rgba(86, 156, 214, 0.6); border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; z-index: 350; opacity: 0.85; transition: all 0.25s ease;">›</div>
-        <div class="lightbox-caption" id="lightbox-caption" style="margin-top: 14px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 3px; color: #fff; text-shadow: 0 0 10px var(--glow-blue); font-weight: 700;"></div>
+        <div class="lightbox-arrow lightbox-next" onclick="cycleLightbox(1, event)">›</div>
+        <div class="lightbox-caption" id="lightbox-caption"></div>
     </div>
     <div class="back-to-cards" onclick="closeHeroLightbox(event)">✕ Back to Overview</div>
 
-    <!-- MINIMALIST FLOATING HEADER -->
+    <div class="close-cinematic" onclick="closeCinematicMode(event)">✕ Close Focus Mode</div>
+
+    <!-- Floating Navigation -->
     <nav>
         <a href="index.html" class="brand-mark">My Wondrous Travels</a>
         <div class="nav-links">
             <a href="index.html">Collection</a>
             <a href="virtual-gallery.html">Virtual Gallery</a>
-            <a href="journal.html" style="opacity: 1; color: var(--accent-blue);">Studio Journal</a>
-            <a href="exhibitions.html">Exhibitions</a>
+            <a href="journal.html">Studio Journal</a>
+            <a href="exhibitions.html" style="opacity: 1; color: var(--accent-blue);">Exhibitions</a>
             <a href="https://www.saatchiart.com/finespraypaintart" target="_blank">Buy Prints</a>
         </div>
     </nav>
 
-    <main class="journal-container">
-        <div class="journal-header">
-            <h1>Studio Journal</h1>
-            <p>Daily process, high-stakes techniques, and studio dispatches.</p>
+    <main class="exhibitions-container">
+        <div class="exhibitions-header">
+            <h1>Exhibitions & Publications</h1>
+            <p>Art Showings & Publishings (2013 – Present).</p>
         </div>
 
-        <!-- Row 1: Reels 1 to 5 -->
-        <div class="journal-row">
-            <!-- Reel 1 -->
-            <div class="reel-card">
-                <div class="spiral-cascade-container cascade-top-right">
-                    <div class="cascade-layer l1"></div>
-                    <div class="cascade-layer l2"></div>
-                    <div class="cascade-layer l3"></div>
-                    <div class="cascade-layer l4"></div>
-                </div>
-                <div class="reel-video-wrap">
-                    <video muted loop playsinline preload="metadata">
-                        <source src="IG Feed 1.mp4#t=0.001" type="video/mp4">
-                    </video>
-                    <div class="reel-info">
-                        <h3>01 // The Core</h3>
-                        <p>I spray it til you see it.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Reel 2 -->
-            <div class="reel-card">
+        <div class="timeline-feed">
+            <!-- 2023: Art Basel Miami -->
+            <div class="exhibit-card-wrapper reveal-item" data-bg="exhibit basel 10.jpg">
                 <div class="spiral-cascade-container cascade-bottom-left">
                     <div class="cascade-layer l1"></div>
                     <div class="cascade-layer l2"></div>
-                    <div class="cascade-layer l3"></div>
-                    <div class="cascade-layer l4"></div>
                 </div>
-                <div class="reel-video-wrap">
-                    <video muted loop playsinline preload="metadata">
-                        <source src="IG Feed 2.mp4#t=0.001" type="video/mp4">
-                    </video>
-                    <div class="reel-info">
-                        <h3>02 // The Setup</h3>
-                        <p>Paint, tools, and the sock.</p>
+                <div class="exhibit-card" onclick="openCinematicMode(this)">
+                    <div class="exhibit-year">2023</div>
+                    <div class="exhibit-content">
+                        <h3>Featured Artist // Art Basel, Miami</h3>
+                        <p>Featured artist presentation during the Caviar and Supercars exhibition.</p>
                     </div>
+                </div>
+                <div class="scrapbook-drawer">
+                    <div class="carousel-arrow" onclick="scrollCarousel(this, -1)">‹</div>
+                    <div class="carousel-track">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('exhibit basel 1.jpg', 'Art Basel Miami • Plate 01', this)">
+                            <div class="iw-frosted-thumb"><img src="exhibit basel 1.jpg" alt="Art Basel Miami 1"></div>
+                            <div class="iw-frosted-meta"><h4>Supercars & Caviar</h4><span>01</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('exhibit basel 2.jpg', 'Art Basel Miami • Plate 02', this)">
+                            <div class="iw-frosted-thumb"><img src="exhibit basel 2.jpg" alt="Art Basel Miami 2"></div>
+                            <div class="iw-frosted-meta"><h4>Gallery Display</h4><span>02</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('exhibit basel 3.jpg', 'Art Basel Miami • Plate 03', this)">
+                            <div class="iw-frosted-thumb"><img src="exhibit basel 3.jpg" alt="Art Basel Miami 3"></div>
+                            <div class="iw-frosted-meta"><h4>Artist Showcase</h4><span>03</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('exhibit basel 4.jpg', 'Art Basel Miami • Plate 04', this)">
+                            <div class="iw-frosted-thumb"><img src="exhibit basel 4.jpg" alt="Art Basel Miami 4"></div>
+                            <div class="iw-frosted-meta"><h4>Curated Space</h4><span>04</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('exhibit basel 5.jpg', 'Art Basel Miami • Plate 05', this)">
+                            <div class="iw-frosted-thumb"><img src="exhibit basel 5.jpg" alt="Art Basel Miami 5"></div>
+                            <div class="iw-frosted-meta"><h4>Wynwood Vista</h4><span>05</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('exhibit basel 6.jpg', 'Art Basel Miami • Plate 06', this)">
+                            <div class="iw-frosted-thumb"><img src="exhibit basel 6.jpg" alt="Art Basel Miami 6"></div>
+                            <div class="iw-frosted-meta"><h4>Opening Night</h4><span>06</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('exhibit basel 7.jpg', 'Art Basel Miami • Plate 07', this)">
+                            <div class="iw-frosted-thumb"><img src="exhibit basel 7.jpg" alt="Art Basel Miami 7"></div>
+                            <div class="iw-frosted-meta"><h4>Reception</h4><span>07</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('exhibit basel 8.jpg', 'Art Basel Miami • Plate 08', this)">
+                            <div class="iw-frosted-thumb"><img src="exhibit basel 8.jpg" alt="Art Basel Miami 8"></div>
+                            <div class="iw-frosted-meta"><h4>Pavilion</h4><span>08</span></div>
+                        </div>
+                    </div>
+                    <div class="carousel-arrow" onclick="scrollCarousel(this, 1)">›</div>
                 </div>
             </div>
 
-            <!-- Reel 3 -->
-            <div class="reel-card">
+            <!-- 2022 SuperRare Gallery Opening, Soho NYC -->
+            <div class="exhibit-card-wrapper reveal-item" data-bg="sr 1.jpg">
                 <div class="spiral-cascade-container cascade-top-right">
                     <div class="cascade-layer l1"></div>
                     <div class="cascade-layer l2"></div>
-                    <div class="cascade-layer l3"></div>
-                    <div class="cascade-layer l4"></div>
                 </div>
-                <div class="reel-video-wrap">
-                    <video muted loop playsinline preload="metadata">
-                        <source src="IG Feed 3.mp4#t=0.001" type="video/mp4">
-                    </video>
-                    <div class="reel-info">
-                        <h3>03 // The Process</h3>
-                        <p>Spray & wipe philosophy.</p>
+                <div class="exhibit-card" onclick="openCinematicMode(this)">
+                    <div class="exhibit-year">290</div>
+                    <div class="exhibit-content">
+                        <h3>SuperRare Gallery Opening, Soho NYC</h3>
+                        <p>Featured exhibition opening event at SuperRare Gallery in Soho, New York City.</p>
                     </div>
+                </div>
+                <div class="scrapbook-drawer">
+                    <div class="carousel-arrow" onclick="scrollCarousel(this, -1)">‹</div>
+                    <div class="carousel-track">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('sr 2.jpg', 'SuperRare Gallery Opening • Plate 02', this)">
+                            <div class="iw-frosted-thumb"><img src="sr 2.jpg" alt="SuperRare 2"></div>
+                            <div class="iw-frosted-meta"><h4>SuperRare 2</h4><span>02</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('sr 3.jpg', 'SuperRare Gallery Opening • Plate 03', this)">
+                            <div class="iw-frosted-thumb"><img src="sr 3.jpg" alt="SuperRare 3"></div>
+                            <div class="iw-frosted-meta"><h4>SuperRare 3</h4><span>03</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('sr 4.jpg', 'SuperRare Gallery Opening • Plate 04', this)">
+                            <div class="iw-frosted-thumb"><img src="sr 4.jpg" alt="SuperRare 4"></div>
+                            <div class="iw-frosted-meta"><h4>SuperRare 4</h4><span>04</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('sr 5.jpg', 'SuperRare Gallery Opening • Plate 05', this)">
+                            <div class="iw-frosted-thumb"><img src="sr 5.jpg" alt="SuperRare 5"></div>
+                            <div class="iw-frosted-meta"><h4>SuperRare 5</h4><span>05</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('sr 6.jpg', 'SuperRare Gallery Opening • Plate 06', this)">
+                            <div class="iw-frosted-thumb"><img src="sr 6.jpg" alt="SuperRare 6"></div>
+                            <div class="iw-frosted-meta"><h4>SuperRare 6</h4><span>06</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('sr 7.jpg', 'SuperRare Gallery Opening • Plate 07', this)">
+                            <div class="iw-frosted-thumb"><img src="sr 7.jpg" alt="SuperRare 7"></div>
+                            <div class="iw-frosted-meta"><h4>SuperRare 7</h4><span>07</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('sr 8.jpg', 'SuperRare Gallery Opening • Plate 08', this)">
+                            <div class="iw-frosted-thumb"><img src="sr 8.jpg" alt="SuperRare 8"></div>
+                            <div class="iw-frosted-meta"><h4>SuperRare 8</h4><span>08</span></div>
+                        </div>
+                    </div>
+                    <div class="carousel-arrow" onclick="scrollCarousel(this, 1)">›</div>
                 </div>
             </div>
 
-            <!-- Reel 4 -->
-            <div class="reel-card">
+            <!-- Banana Factory, Resident Artist (Exhibitions Style with bf 1.jpg bg and bf 1-7 in carousel) -->
+            <div class="exhibit-card-wrapper reveal-item" data-bg="bf 1.jpg">
                 <div class="spiral-cascade-container cascade-bottom-left">
                     <div class="cascade-layer l1"></div>
                     <div class="cascade-layer l2"></div>
-                    <div class="cascade-layer l3"></div>
-                    <div class="cascade-layer l4"></div>
                 </div>
-                <div class="reel-video-wrap">
-                    <video muted loop playsinline preload="metadata">
-                        <source src="IG Feed 4.mp4#t=0.001" type="video/mp4">
-                    </video>
-                    <div class="reel-info">
-                        <h3>04 // Risk vs. Reward</h3>
-                        <p>Infinite Worlds straight-edge technique.</p>
+                <div class="exhibit-card" onclick="openCinematicMode(this)">
+                    <div class="exhibit-year">Residency</div>
+                    <div class="exhibit-content">
+                        <h3>Banana Factory, Resident Artist</h3>
+                        <p>Studio residency and creative workspace documentation.</p>
                     </div>
+                </div>
+                <div class="scrapbook-drawer">
+                    <div class="carousel-arrow" onclick="scrollCarousel(this, -1)">‹</div>
+                    <div class="carousel-track">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('bf 1.jpg', 'Banana Factory Resident Artist • Plate 01', this)">
+                            <div class="iw-frosted-thumb"><img src="bf 1.jpg" alt="Banana Factory 1"></div>
+                            <div class="iw-frosted-meta"><h4>Studio View 1</h4><span>01</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('bf 2.jpg', 'Banana Factory Resident Artist • Plate 02', this)">
+                            <div class="iw-frosted-thumb"><img src="bf 2.jpg" alt="Banana Factory 2"></div>
+                            <div class="iw-frosted-meta"><h4>Studio View 2</h4><span>02</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('bf 3.jpg', 'Banana Factory Resident Artist • Plate 03', this)">
+                            <div class="iw-frosted-thumb"><img src="bf 3.jpg" alt="Banana Factory 3"></div>
+                            <div class="iw-frosted-meta"><h4>Workspace</h4><span>03</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('bf 4.jpg', 'Banana Factory Resident Artist • Plate 04', this)">
+                            <div class="iw-frosted-thumb"><img src="bf 4.jpg" alt="Banana Factory 4"></div>
+                            <div class="iw-frosted-meta"><h4>Creation Pass</h4><span>04</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('bf 5.jpg', 'Banana Factory Resident Artist • Plate 05', this)">
+                            <div class="iw-frosted-thumb"><img src="bf 5.jpg" alt="Banana Factory 5"></div>
+                            <div class="iw-frosted-meta"><h4>Studio Space</h4><span>05</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('bf 6.jpg', 'Banana Factory Resident Artist • Plate 06', this)">
+                            <div class="iw-frosted-thumb"><img src="bf 6.jpg" alt="Banana Factory 6"></div>
+                            <div class="iw-frosted-meta"><h4>Artist Talk</h4><span>06</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('bf 7.jpg', 'Banana Factory Resident Artist • Plate 07', this)">
+                            <div class="iw-frosted-thumb"><img src="bf 7.jpg" alt="Banana Factory 7"></div>
+                            <div class="iw-frosted-meta"><h4>Residency Final</h4><span>07</span></div>
+                        </div>
+                    </div>
+                    <div class="carousel-arrow" onclick="scrollCarousel(this, 1)">›</div>
                 </div>
             </div>
 
-            <!-- Reel 5 -->
-            <div class="reel-card">
+            <!-- 2022 SoHo -->
+            <div class="exhibit-card-wrapper reveal-item">
                 <div class="spiral-cascade-container cascade-top-right">
                     <div class="cascade-layer l1"></div>
                     <div class="cascade-layer l2"></div>
-                    <div class="cascade-layer l3"></div>
-                    <div class="cascade-layer l4"></div>
                 </div>
-                <div class="reel-video-wrap">
-                    <video muted loop playsinline preload="metadata">
-                        <source src="IG Feed 5.mp4#t=0.001" type="video/mp4">
-                    </video>
-                    <div class="reel-info">
-                        <h3>05 // Less Is More</h3>
-                        <p>Atmospheric rings & spray effects.</p>
+                <div class="exhibit-card">
+                    <div class="exhibit-year">2022</div>
+                    <div class="exhibit-content">
+                        <h3>Hosted Live Artists, SoHo Hotel NYC</h3>
+                        <p>Hosted live artists at the SoHo Hotel in New York City.</p>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Row 2: Reels 6 to 10 -->
-        <div class="journal-row">
-            <!-- Reel 6 -->
-            <div class="reel-card">
+            <!-- 2022 Rooftop -->
+            <div class="exhibit-card-wrapper reveal-item" data-video="rooftop soho 2.mp4">
                 <div class="spiral-cascade-container cascade-bottom-left">
                     <div class="cascade-layer l1"></div>
                     <div class="cascade-layer l2"></div>
-                    <div class="cascade-layer l3"></div>
-                    <div class="cascade-layer l4"></div>
                 </div>
-                <div class="reel-video-wrap">
-                    <video muted loop playsinline preload="metadata">
-                        <source src="IG Feed 6.mp4#t=0.001" type="video/mp4">
-                    </video>
-                    <div class="reel-info">
-                        <h3>06 // Mistakes Made Right</h3>
-                        <p>Wet paint panic to happy accident.</p>
+                <div class="exhibit-card" onclick="openCinematicMode(this)">
+                    <div class="exhibit-year">2022</div>
+                    <div class="exhibit-content">
+                        <h3>“Make and Mint” Rooftop, SOHO NYC</h3>
+                        <p>Hosted the Make and Mint Rooftop Event in SoHo, NYC.</p>
                     </div>
+                </div>
+                <div class="scrapbook-drawer">
+                    <div class="carousel-arrow" onclick="scrollCarousel(this, -1)">‹</div>
+                    <div class="carousel-track">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('rooftop soho 3.jpg', 'SoHo Skyline • Plate 01', this)">
+                            <div class="iw-frosted-thumb"><img src="rooftop soho 3.jpg" alt="SoHo City Skyline"></div>
+                            <div class="iw-frosted-meta"><h4>City Skyline</h4><span>01</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('rooftop soho 4.jpg', 'Rooftop Crowd • Plate 02', this)">
+                            <div class="iw-frosted-thumb"><img src="rooftop soho 4.jpg" alt="Rooftop Gathering"></div>
+                            <div class="iw-frosted-meta"><h4>Rooftop Crowd</h4><span>02</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('rooftop soho 5.jpg', 'Original Artwork Display • Plate 03', this)">
+                            <div class="iw-frosted-thumb"><img src="rooftop soho 5.jpg" alt="Original Artwork Showcase"></div>
+                            <div class="iw-frosted-meta"><h4>Artwork Display</h4><span>03</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('rooftop soho 6.jpg', 'Washington Sq Arch • Plate 04', this)">
+                            <div class="iw-frosted-thumb"><img src="rooftop soho 6.jpg" alt="Washington Square Arch"></div>
+                            <div class="iw-frosted-meta"><h4>Washington Sq</h4><span>04</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('rooftop soho 7.jpg', 'Empire State Night Vista • Plate 05', this)">
+                            <div class="iw-frosted-thumb"><img src="rooftop soho 7.jpg" alt="Empire State Night Vista"></div>
+                            <div class="iw-frosted-meta"><h4>Night Vista</h4><span>05</span></div>
+                        </div>
+                    </div>
+                    <div class="carousel-arrow" onclick="scrollCarousel(this, 1)">›</div>
                 </div>
             </div>
 
-            <!-- Reel 7 -->
-            <div class="reel-card">
+            <!-- 2022 Stratosphere -->
+            <div class="exhibit-card-wrapper reveal-item" data-bg="beijing.jpg">
                 <div class="spiral-cascade-container cascade-top-right">
                     <div class="cascade-layer l1"></div>
                     <div class="cascade-layer l2"></div>
-                    <div class="cascade-layer l3"></div>
-                    <div class="cascade-layer l4"></div>
                 </div>
-                <div class="reel-video-wrap">
-                    <video muted loop playsinline preload="metadata">
-                        <source src="IG Feed 7.mp4#t=0.001" type="video/mp4">
-                    </video>
-                    <div class="reel-info">
-                        <h3>07 // Light Paints Everything</h3>
-                        <p>Atmospheric realism & reflections.</p>
+                <div class="exhibit-card" onclick="openCinematicMode(this)">
+                    <div class="exhibit-year">2022</div>
+                    <div class="exhibit-content">
+                        <h3>Curated & Designed Stratosphere Virtual Gallery</h3>
+                        <p>Created the virtual gallery environment on Spatial.io.</p>
                     </div>
+                </div>
+                <div class="scrapbook-drawer">
+                    <div class="carousel-arrow" onclick="scrollCarousel(this, -1)">‹</div>
+                    <div class="carousel-track">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('strat 1.jpg', 'Stratosphere Virtual Gallery • Plate 01', this)">
+                            <div class="iw-frosted-thumb"><img src="strat 1.jpg" alt="Stratosphere 1"></div>
+                            <div class="iw-frosted-meta"><h4>Stratosphere 1</h4><span>01</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('strat 2.jpg', 'Stratosphere Virtual Gallery • Plate 02', this)">
+                            <div class="iw-frosted-thumb"><img src="strat 2.jpg" alt="Stratosphere 2"></div>
+                            <div class="iw-frosted-meta"><h4>Stratosphere 2</h4><span>02</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('strat 3.jpg', 'Stratosphere Virtual Gallery • Plate 03', this)">
+                            <div class="iw-frosted-thumb"><img src="strat 3.jpg" alt="Stratosphere 3"></div>
+                            <div class="iw-frosted-meta"><h4>Stratosphere 3</h4><span>03</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('strat 4.jpg', 'Stratosphere Virtual Gallery • Plate 04', this)">
+                            <div class="iw-frosted-thumb"><img src="strat 4.jpg" alt="Stratosphere 4"></div>
+                            <div class="iw-frosted-meta"><h4>Stratosphere 4</h4><span>04</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('strat 5.jpg', 'Stratosphere Virtual Gallery • Plate 05', this)">
+                            <div class="iw-frosted-thumb"><img src="strat 5.jpg" alt="Stratosphere 5"></div>
+                            <div class="iw-frosted-meta"><h4>Stratosphere 5</h4><span>05</span></div>
+                        </div>
+                    </div>
+                    <div class="carousel-arrow" onclick="scrollCarousel(this, 1)">›</div>
                 </div>
             </div>
 
-            <!-- Reel 8 -->
-            <div class="reel-card">
+            <!-- 2022 First NFT Section -->
+            <div class="exhibit-card-wrapper reveal-item" data-bg="nft 3.jpg">
                 <div class="spiral-cascade-container cascade-bottom-left">
                     <div class="cascade-layer l1"></div>
                     <div class="cascade-layer l2"></div>
-                    <div class="cascade-layer l3"></div>
-                    <div class="cascade-layer l4"></div>
                 </div>
-                <div class="reel-video-wrap">
-                    <video muted loop playsinline preload="metadata">
-                        <source src="IG Feed 8.mp4#t=0.001" type="video/mp4">
-                    </video>
-                    <div class="reel-info">
-                        <h3>08 // Know Your Paint</h3>
-                        <p>Matte vs. gloss dabbing & light reveal.</p>
+                <div class="exhibit-card" onclick="openCinematicMode(this)">
+                    <div class="exhibit-year">2021</div>
+                    <div class="exhibit-content">
+                        <h3>First NFT to Ever Sell In and From a Virtual Gallery</h3>
+                        <p>Historic milestone achievement with 27 NFTs sold in 2021.</p>
                     </div>
+                </div>
+                <div class="scrapbook-drawer">
+                    <div class="carousel-arrow" onclick="scrollCarousel(this, -1)">‹</div>
+                    <div class="carousel-track">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('nft 1.jpg', 'First NFT Collection • Plate 01', this)">
+                            <div class="iw-frosted-thumb"><img src="nft 1.jpg" alt="NFT 1"></div>
+                            <div class="iw-frosted-meta"><h4>NFT Release 1</h4><span>01</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('nft 2.jpg', 'First NFT Collection • Plate 02', this)">
+                            <div class="iw-frosted-thumb"><img src="nft 2.jpg" alt="NFT 2"></div>
+                            <div class="iw-frosted-meta"><h4>NFT Release 2</h4><span>02</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('nft 4.jpg', 'First NFT Collection • Plate 03', this)">
+                            <div class="iw-frosted-thumb"><img src="nft 4.jpg" alt="NFT 4"></div>
+                            <div class="iw-frosted-meta"><h4>NFT Release 4</h4><span>03</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('nft 5.jpg', 'First NFT Collection • Plate 04', this)">
+                            <div class="iw-frosted-thumb"><img src="nft 5.jpg" alt="NFT 5"></div>
+                            <div class="iw-frosted-meta"><h4>NFT Release 5</h4><span>04</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('nft 6.jpg', 'First NFT Collection • Plate 05', this)">
+                            <div class="iw-frosted-thumb"><img src="nft 6.jpg" alt="NFT 6"></div>
+                            <div class="iw-frosted-meta"><h4>NFT Release 6</h4><span>05</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('nft 7.jpg', 'First NFT Collection • Plate 06', this)">
+                            <div class="iw-frosted-thumb"><img src="nft 7.jpg" alt="NFT 7"></div>
+                            <div class="iw-frosted-meta"><h4>NFT Release 7</h4><span>06</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('nft 8.jpg', 'First NFT Collection • Plate 07', this)">
+                            <div class="iw-frosted-thumb"><img src="nft 8.jpg" alt="NFT 8"></div>
+                            <div class="iw-frosted-meta"><h4>NFT Release 8</h4><span>07</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('nft 9.jpg', 'First NFT Collection • Plate 08', this)">
+                            <div class="iw-frosted-thumb"><img src="nft 9.jpg" alt="NFT 9"></div>
+                            <div class="iw-frosted-meta"><h4>NFT Release 9</h4><span>08</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('nft 10.jpg', 'First NFT Collection • Plate 09', this)">
+                            <div class="iw-frosted-thumb"><img src="nft 10.jpg" alt="NFT 10"></div>
+                            <div class="iw-frosted-meta"><h4>NFT Release 10</h4><span>09</span></div>
+                        </div>
+                    </div>
+                    <div class="carousel-arrow" onclick="scrollCarousel(this, 1)">›</div>
                 </div>
             </div>
 
-            <!-- Reel 9 -->
-            <div class="reel-card">
+            <!-- 2022 Beijing Featured Show -->
+            <div class="exhibit-card-wrapper reveal-item" data-bg="Beijing me.jpg">
                 <div class="spiral-cascade-container cascade-top-right">
                     <div class="cascade-layer l1"></div>
                     <div class="cascade-layer l2"></div>
-                    <div class="cascade-layer l3"></div>
-                    <div class="cascade-layer l4"></div>
                 </div>
-                <div class="reel-video-wrap">
-                    <video muted loop playsinline preload="metadata">
-                        <source src="IG Feed 9.mp4#t=0.001" type="video/mp4">
-                    </video>
-                    <div class="reel-info">
-                        <h3>09 // Build Your World</h3>
-                        <p>Trash bag texture & moon lift.</p>
+                <div class="exhibit-card" onclick="openCinematicMode(this)">
+                    <div class="exhibit-year">2022</div>
+                    <div class="exhibit-content">
+                        <h3>Featured Stratosphere Artist Show // Beijing, China</h3>
+                        <p>Featured showcase at the world's largest NFT show hosted in Beijing, China.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Reel 10 -->
-            <div class="reel-card">
+            <!-- 2021 Spatial Explore -->
+            <div class="exhibit-card-wrapper reveal-item">
                 <div class="spiral-cascade-container cascade-bottom-left">
                     <div class="cascade-layer l1"></div>
                     <div class="cascade-layer l2"></div>
-                    <div class="cascade-layer l3"></div>
-                    <div class="cascade-layer l4"></div>
                 </div>
-                <div class="reel-video-wrap">
-                    <video muted loop playsinline preload="metadata">
-                        <source src="IG Feed 10.mp4#t=0.001" type="video/mp4">
-                    </video>
-                    <div class="reel-info">
-                        <h3>10 // Spray Effects</h3>
-                        <p>Use your fingers.</p>
+                <div class="exhibit-card">
+                    <div class="exhibit-year">2021</div>
+                    <div class="exhibit-content">
+                        <h3>Featured Explore Tab Spatial Gallery Artist</h3>
+                        <p>Featured artist on the Spatial Explore tab.</p>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- NEW SECTION: Banana Factory, Resident Artist (Exhibitions Style with Carousel & Lightbox) -->
-        <div class="exhibit-card-wrapper">
-            <div class="spiral-cascade-container cascade-bottom-left">
-                <div class="cascade-layer l1"></div>
-                <div class="cascade-layer l2"></div>
-            </div>
-            <div class="exhibit-card">
-                <div class="exhibit-year">Residency</div>
-                <div class="exhibit-content">
-                    <h3>Banana Factory, Resident Artist</h3>
-                    <p>Studio residency and creative workspace documentation.</p>
-                </div>
-            </div>
-            <div class="scrapbook-drawer">
-                <div class="carousel-arrow" onclick="scrollCarousel(this, -1)">‹</div>
-                <div class="carousel-track">
-                    <div class="iw-frosted-card" onclick="openHeroLightbox('bf 1.jpg', 'Banana Factory Resident Artist • Plate 01', this)">
-                        <div class="iw-frosted-thumb"><img src="bf 1.jpg" alt="Banana Factory 1"></div>
-                        <div class="iw-frosted-meta"><h4>Studio View 1</h4><span>01</span></div>
-                    </div>
-                    <div class="iw-frosted-card" onclick="openHeroLightbox('bf 2.jpg', 'Banana Factory Resident Artist • Plate 02', this)">
-                        <div class="iw-frosted-thumb"><img src="bf 2.jpg" alt="Banana Factory 2"></div>
-                        <div class="iw-frosted-meta"><h4>Studio View 2</h4><span>02</span></div>
-                    </div>
-                    <div class="iw-frosted-card" onclick="openHeroLightbox('bf 3.jpg', 'Banana Factory Resident Artist • Plate 03', this)">
-                        <div class="iw-frosted-thumb"><img src="bf 3.jpg" alt="Banana Factory 3"></div>
-                        <div class="iw-frosted-meta"><h4>Workspace</h4><span>03</span></div>
-                    </div>
-                    <div class="iw-frosted-card" onclick="openHeroLightbox('bf 4.jpg', 'Banana Factory Resident Artist • Plate 04', this)">
-                        <div class="iw-frosted-thumb"><img src="bf 4.jpg" alt="Banana Factory 4"></div>
-                        <div class="iw-frosted-meta"><h4>Creation Pass</h4><span>04</span></div>
-                    </div>
-                    <div class="iw-frosted-card" onclick="openHeroLightbox('bf 5.jpg', 'Banana Factory Resident Artist • Plate 05', this)">
-                        <div class="iw-frosted-thumb"><img src="bf 5.jpg" alt="Banana Factory 5"></div>
-                        <div class="iw-frosted-meta"><h4>Studio Space</h4><span>05</span></div>
-                    </div>
-                    <div class="iw-frosted-card" onclick="openHeroLightbox('bf 6.jpg', 'Banana Factory Resident Artist • Plate 06', this)">
-                        <div class="iw-frosted-thumb"><img src="bf 6.jpg" alt="Banana Factory 6"></div>
-                        <div class="iw-frosted-meta"><h4>Artist Talk</h4><span>06</span></div>
-                    </div>
-                    <div class="iw-frosted-card" onclick="openHeroLightbox('bf 7.jpg', 'Banana Factory Resident Artist • Plate 07', this)">
-                        <div class="iw-frosted-thumb"><img src="bf 7.jpg" alt="Banana Factory 7"></div>
-                        <div class="iw-frosted-meta"><h4>Residency Final</h4><span>07</span></div>
-                    </div>
-                </div>
-                <div class="carousel-arrow" onclick="scrollCarousel(this, 1)">›</div>
-            </div>
-        </div>
-
-        <!-- Feature Film Production Spotlight (Finger Laced Crown with bf 8.jpg) -->
-        <div class="feature-banner" style="background: linear-gradient(to bottom, rgba(3,3,5,0.4), rgba(3,3,5,0.8)), url('bf 8.jpg') center/cover no-repeat;">
-            <div class="spiral-cascade-container cascade-top-right feature-spiral">
-                <div class="cascade-layer l1"></div>
-                <div class="cascade-layer l2"></div>
-                <div class="cascade-layer l3"></div>
-                <div class="cascade-layer l4"></div>
             </div>
 
-            <div class="feature-copy">
-                <span>Feature Film Production</span>
-                <h2>Finger Laced Crown</h2>
-                <p>Exploring 14 years of aerosol atmospheric realism, early tokenized digital art, and Navigating the high-wire act of feature film production.</p>
-                <a href="https://youtu.be/-cBZcOsQSD8" target="_blank" class="btn-trailer" style="display: inline-block; padding: 16px 32px; background: #fff; color: #000; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2.5px; text-decoration: none; text-align: center; transition: all 0.25s ease;">Watch Official Trailer</a>
+            <!-- 2021 Bethlehem -->
+            <div class="exhibit-card-wrapper reveal-item" data-bg="bhg 6.jpg">
+                <div class="spiral-cascade-container cascade-top-right">
+                    <div class="cascade-layer l1"></div>
+                    <div class="cascade-layer l2"></div>
+                </div>
+                <div class="exhibit-card" onclick="openCinematicMode(this)">
+                    <div class="exhibit-year">2021</div>
+                    <div class="exhibit-content">
+                        <h3>Bethlehem House Gallery Winter Show</h3>
+                        <p>Featured winter exhibition (Jan–Mar 2021) at Bethlehem House Gallery.</p>
+                    </div>
+                </div>
+                <div class="scrapbook-drawer">
+                    <div class="carousel-arrow" onclick="scrollCarousel(this, -1)">‹</div>
+                    <div class="carousel-track">
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('bhg 1.jpg', 'Bethlehem House Gallery • Plate 01', this)">
+                            <div class="iw-frosted-thumb"><img src="bhg 1.jpg" alt="Bethlehem House Gallery 1"></div>
+                            <div class="iw-frosted-meta"><h4>Winter Show</h4><span>01</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('bhg 2.jpg', 'Bethlehem House Gallery • Plate 02', this)">
+                            <div class="iw-frosted-thumb"><img src="bhg 2.jpg" alt="Bethlehem House Gallery 2"></div>
+                            <div class="iw-frosted-meta"><h4>Gallery View</h4><span>02</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('bhg 3.jpg', 'Bethlehem House Gallery • Plate 03', this)">
+                            <div class="iw-frosted-thumb"><img src="bhg 3.jpg" alt="Bethlehem House Gallery 3"></div>
+                            <div class="iw-frosted-meta"><h4>Exhibition Piece</h4><span>03</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('bhg 4.jpg', 'Bethlehem House Gallery • Plate 04', this)">
+                            <div class="iw-frosted-thumb"><img src="bhg 4.jpg" alt="Bethlehem House Gallery 4"></div>
+                            <div class="iw-frosted-meta"><h4>Featured Wall</h4><span>04</span></div>
+                        </div>
+                        <div class="iw-frosted-card" onclick="openHeroLightbox('bhg 5.jpg', 'Bethlehem House Gallery • Plate 05', this)">
+                            <div class="iw-frosted-thumb"><img src="bhg 5.jpg" alt="Bethlehem House Gallery 5"></div>
+                            <div class="iw-frosted-meta"><h4>Opening Night</h4><span>05</span></div>
+                        </div>
+                    </div>
+                    <div class="carousel-arrow" onclick="scrollCarousel(this, 1)">›</div>
+                </div>
             </div>
-            <a href="https://youtu.be/-cBZcOsQSD8" target="_blank" class="feature-visual" style="background: url('bf 8.jpg') center/cover no-repeat;">
-                <div class="play-button" style="width: 64px; height: 64px; background: rgba(86, 156, 214, 0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 30px var(--glow);"></div>
-            </a>
+
+            <!-- 2021 Morning Call -->
+            <div class="exhibit-card-wrapper reveal-item">
+                <div class="spiral-cascade-container cascade-bottom-left">
+                    <div class="cascade-layer l1"></div>
+                    <div class="cascade-layer l2"></div>
+                </div>
+                <div class="exhibit-card">
+                    <div class="exhibit-year">2021</div>
+                    <div class="exhibit-content">
+                        <h3>Morning Call Newspaper Feature Article</h3>
+                        <p>Published feature article on Tyrone Webb (January 2021).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2020 CCA Abilene -->
+            <div class="exhibit-card-wrapper reveal-item">
+                <div class="spiral-cascade-container cascade-top-right">
+                    <div class="cascade-layer l1"></div>
+                    <div class="cascade-layer l2"></div>
+                </div>
+                <div class="exhibit-card">
+                    <div class="exhibit-year">2020</div>
+                    <div class="exhibit-content">
+                        <h3>Center for Contemporary Art, Abilene TX</h3>
+                        <p>Selected artist for the National Juried Show.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2019 Blue & Brews -->
+            <div class="exhibit-card-wrapper reveal-item">
+                <div class="spiral-cascade-container cascade-bottom-left">
+                    <div class="cascade-layer l1"></div>
+                    <div class="cascade-layer l2"></div>
+                </div>
+                <div class="exhibit-card">
+                    <div class="exhibit-year">2019</div>
+                    <div class="exhibit-content">
+                        <h3>Blue and Brews Featured Gallery Solo Show</h3>
+                        <p>Solo exhibition in Allentown, PA.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2019 ArtDiction -->
+            <div class="exhibit-card-wrapper reveal-item">
+                <div class="spiral-cascade-container cascade-top-right">
+                    <div class="cascade-layer l1"></div>
+                    <div class="cascade-layer l2"></div>
+                </div>
+                <div class="exhibit-card">
+                    <div class="exhibit-year">2019</div>
+                    <div class="exhibit-content">
+                        <h3>ArtDiction Magazine Cover & Interview</h3>
+                        <p>Cover image and feature interview in the May/June 2019 issue. <a href="https://issuu.com/devikaakeise/docs/mayjune2019" target="_blank">View Issue on Issuu</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2019 Other Worldly -->
+            <div class="exhibit-card-wrapper reveal-item">
+                <div class="spiral-cascade-container cascade-bottom-left">
+                    <div class="cascade-layer l1"></div>
+                    <div class="cascade-layer l2"></div>
+                </div>
+                <div class="exhibit-card">
+                    <div class="exhibit-year">2019</div>
+                    <div class="exhibit-content">
+                        <h3>Other Worldly Art Show & DUMBO Solo Show</h3>
+                        <p>Exhibited at Open Space Gallery in Philadelphia (March 2019) and hosted a Solo Show with the Brooklyn Paranormal Society in DUMBO (February 2019).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2019 Soft Machine -->
+            <div class="exhibit-card-wrapper reveal-item">
+                <div class="spiral-cascade-container cascade-top-right">
+                    <div class="cascade-layer l1"></div>
+                    <div class="cascade-layer l2"></div>
+                </div>
+                <div class="exhibit-card">
+                    <div class="exhibit-year">2019</div>
+                    <div class="exhibit-content">
+                        <h3>Soft Machine Gallery Group Show</h3>
+                        <p>Featured group exhibition in Allentown, PA (February 2019).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2018 Disrupt -->
+            <div class="exhibit-card-wrapper reveal-item">
+                <div class="spiral-cascade-container cascade-bottom-left">
+                    <div class="cascade-layer l1"></div>
+                    <div class="cascade-layer l2"></div>
+                </div>
+                <div class="exhibit-card">
+                    <div class="exhibit-year">2018</div>
+                    <div class="exhibit-content">
+                        <h3>“Disrupt, Disrupt” Winter Art Show</h3>
+                        <p>Featured group presentation at Artists and Fleas in Brooklyn, NYC (November 2018).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2018 WFMZ TV -->
+            <div class="exhibit-card-wrapper reveal-item">
+                <div class="spiral-cascade-container cascade-top-right">
+                    <div class="cascade-layer l1"></div>
+                    <div class="cascade-layer l2"></div>
+                </div>
+                <div class="exhibit-card">
+                    <div class="exhibit-year">2018</div>
+                    <div class="exhibit-content">
+                        <h3>Featured Television Interview on WFMZ TV</h3>
+                        <p>Broadcast feature interview (August 2018).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2018 Many Worlds Away -->
+            <div class="exhibit-card-wrapper reveal-item">
+                <div class="spiral-cascade-container cascade-bottom-left">
+                    <div class="cascade-layer l1"></div>
+                    <div class="cascade-layer l2"></div>
+                </div>
+                <div class="exhibit-card">
+                    <div class="exhibit-year">2018</div>
+                    <div class="exhibit-content">
+                        <h3>“Many Worlds Away” Solo Art Show</h3>
+                        <p>Exhibited at Gallery 415 in Catasauqua, PA (August 2018).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2017 My Wondrous Travels -->
+            <div class="exhibit-card-wrapper reveal-item">
+                <div class="spiral-cascade-container cascade-top-right">
+                    <div class="cascade-layer l1"></div>
+                    <div class="cascade-layer l2"></div>
+                </div>
+                <div class="exhibit-card">
+                    <div class="exhibit-year">2017</div>
+                    <div class="exhibit-content">
+                        <h3>“My Wondrous Travels” Solo Art Show</h3>
+                        <p>Exhibited at Gallery 724 in Allentown, PA (June–July 2017).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2015 Carmelo Anthony -->
+            <div class="exhibit-card-wrapper reveal-item">
+                <div class="spiral-cascade-container cascade-bottom-left">
+                    <div class="cascade-layer l1"></div>
+                    <div class="cascade-layer l2"></div>
+                </div>
+                <div class="exhibit-card">
+                    <div class="exhibit-year">2015</div>
+                    <div class="exhibit-content">
+                        <h3>Interviewed & Featured by Carmelo Anthony</h3>
+                        <p>Featured on 7 Website. <a href="http://www.thisismelo.com/feature/7-with-fine-spray-paint-artist-tyrone-webb/" target="_blank">View Feature</a></p>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 
-    <footer>
-        <div>My Wondrous Travels</div>
-    </footer>
-
+    <!-- SCRIPTS -->
     <script>
+        const mediaContainer = document.getElementById('cinematic-media-container');
+        const cinematicBg = document.getElementById('cinematic-bg');
+        const cinematicVideo = document.getElementById('cinematic-video');
+        const globalDrawer = document.getElementById('global-scrapbook-drawer');
         const heroLightbox = document.getElementById('hero-lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
         const lightboxCaption = document.getElementById('lightbox-caption');
 
+        let savedScrollY = 0;
         let activeGalleryCards = [];
         let currentLightboxIndex = 0;
 
         function scrollCarousel(buttonElement, direction) {
-            const container = buttonElement.closest('.scrapbook-drawer');
+            const container = buttonElement.closest('#global-scrapbook-drawer') || buttonElement.closest('.scrapbook-drawer');
             const track = container.querySelector('.carousel-track');
             const scrollDistance = 220;
             track.scrollBy({ left: direction * scrollDistance, behavior: 'smooth' });
@@ -1193,8 +1354,9 @@
             heroLightbox.classList.add('active');
             document.body.classList.add('image-focus-active');
 
+            // Track active gallery items for cycling via arrows
             if (cardElement) {
-                const drawer = cardElement.closest('.scrapbook-drawer');
+                const drawer = cardElement.closest('#global-scrapbook-drawer');
                 if (drawer) {
                     activeGalleryCards = Array.from(drawer.querySelectorAll('.iw-frosted-card'));
                     currentLightboxIndex = activeGalleryCards.indexOf(cardElement);
@@ -1223,45 +1385,109 @@
             document.body.classList.remove('image-focus-active');
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            document.querySelectorAll('.reel-card').forEach(card => {
-                const video = card.querySelector('video');
+        function openCinematicMode(cardElement) {
+            const wrapper = cardElement.closest('.exhibit-card-wrapper');
+            const customBg = wrapper.getAttribute('data-bg');
+            const customVideo = wrapper.getAttribute('data-video');
+            const cardDrawer = wrapper.querySelector('.scrapbook-drawer');
 
-                card.addEventListener('mouseenter', () => {
-                    if (window.matchMedia('(hover: hover)').matches) {
-                        video.play().catch(() => {});
+            if (!customBg && !customVideo) return;
+
+            const isOpen = wrapper.classList.contains('cinematic-open');
+
+            document.querySelectorAll('.exhibit-card-wrapper').forEach(item => {
+                item.classList.remove('cinematic-open');
+            });
+            document.body.classList.remove('cinematic-active');
+            document.documentElement.classList.remove('cinematic-locked');
+            globalDrawer.classList.remove('active');
+            closeHeroLightbox();
+
+            if (!isOpen) {
+                savedScrollY = window.scrollY;
+
+                mediaContainer.classList.add('mist-flash');
+
+                setTimeout(() => {
+                    if (customVideo) {
+                        cinematicBg.style.display = 'none';
+                        cinematicVideo.style.display = 'block';
+                        cinematicVideo.currentTime = 0;
+                        cinematicVideo.play();
+                    } else if (customBg) {
+                        cinematicVideo.pause();
+                        cinematicVideo.style.display = 'none';
+                        cinematicBg.style.display = 'block';
+                        cinematicBg.style.backgroundImage = `url('${customBg}')`;
                     }
-                });
 
-                card.addEventListener('mouseleave', () => {
-                    if (window.matchMedia('(hover: hover)').matches) {
-                        video.pause();
-                        video.currentTime = 0;
-                        card.classList.remove('is-playing');
-                    }
-                });
-
-                card.addEventListener('click', () => {
-                    const isPaused = video.paused;
-
-                    document.querySelectorAll('.reel-card').forEach(otherCard => {
-                        const otherVideo = otherCard.querySelector('video');
-                        if (otherCard !== card && !otherVideo.paused) {
-                            otherVideo.pause();
-                            otherCard.classList.remove('is-playing');
-                        }
-                    });
-
-                    if (isPaused) {
-                        video.play().catch(() => {});
-                        card.classList.add('is-playing');
+                    if (cardDrawer) {
+                        globalDrawer.innerHTML = cardDrawer.innerHTML;
+                        globalDrawer.classList.add('active');
                     } else {
-                        video.pause();
-                        card.classList.remove('is-playing');
+                        globalDrawer.innerHTML = '';
+                        globalDrawer.classList.remove('active');
+                    }
+
+                    mediaContainer.classList.remove('mist-flash');
+                    wrapper.classList.add('cinematic-open');
+                    document.body.classList.add('cinematic-active');
+                    document.documentElement.classList.add('cinematic-locked');
+                }, 180);
+            }
+        }
+
+        function closeCinematicMode(event) {
+            if (event) event.stopPropagation();
+            closeHeroLightbox();
+            globalDrawer.classList.remove('active');
+            document.body.classList.remove('cinematic-active');
+            document.documentElement.classList.remove('cinematic-locked');
+            document.querySelectorAll('.exhibit-card-wrapper').forEach(item => {
+                item.classList.remove('cinematic-open');
+            });
+            mediaContainer.classList.remove('mist-flash');
+
+            if (cinematicVideo) {
+                cinematicVideo.pause();
+            }
+
+            window.scrollTo({ top: savedScrollY, behavior: 'instant' });
+        }
+
+        mediaContainer.addEventListener('click', (e) => {
+            if (document.body.classList.contains('image-focus-active')) {
+                closeHeroLightbox(e);
+            } else {
+                closeCinematicMode(e);
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
                     }
                 });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal-item').forEach(el => {
+                observer.observe(el);
             });
         });
     </script>
+
+    <footer>
+        <div>My Wondrous Travels • Created on the Shore of Lake Erie, Ohio</div>
+        <div>100% Aerosol Mist • No Brushes</div>
+    </footer>
 </body>
 </html>
