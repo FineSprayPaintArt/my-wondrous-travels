@@ -17,6 +17,13 @@
             --glow-blue: rgba(86, 156, 214, 0.7);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        /* Prevent layout jerk caused by scrollbars appearing/disappearing */
+        html {
+            overflow-y: scroll;
+            scrollbar-gutter: stable;
+        }
+
         body {
             background: radial-gradient(circle at center, #0e0e12 0%, var(--bg) 70%);
             color: var(--text);
@@ -27,6 +34,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            position: relative;
         }
 
         body::before {
@@ -125,6 +133,328 @@
         }
 
         /* =======================================================
+           EXHIBITIONS-STYLE SECTION WRAPPER & CAROUSEL DRAWER
+        ======================================================= */
+        .exhibit-card-wrapper {
+            position: relative;
+            margin-bottom: 36px;
+        }
+
+        .exhibit-card {
+            background: rgba(14, 14, 18, 0.65);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 4px;
+            padding: 32px;
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 40px;
+            align-items: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            cursor: pointer;
+            position: relative;
+            z-index: 2;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        .exhibit-card:hover {
+            border-color: var(--accent-blue);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 35px 6px var(--glow-blue);
+            transform: translateY(-2px);
+        }
+
+        .exhibit-year {
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: var(--accent);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .exhibit-content h3 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .exhibit-content p {
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Scrapbook Drawer (Embedded under banner, matching Exhibitions style) */
+        .scrapbook-drawer {
+            margin-top: 12px;
+            background: rgba(4, 4, 8, 0.92);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(86, 156, 214, 0.45);
+            border-radius: 6px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.85), 0 0 30px rgba(86, 156, 214, 0.15);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .carousel-arrow {
+            flex: 0 0 34px;
+            height: 34px;
+            background: rgba(14, 14, 20, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            user-select: none;
+            z-index: 2;
+        }
+        .carousel-arrow:hover {
+            background: var(--accent-blue);
+            color: #000;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 20px var(--glow-blue);
+            transform: scale(1.08);
+        }
+
+        .carousel-track {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+            gap: 12px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-behavior: smooth;
+            padding: 2px;
+            flex: 1 1 auto;
+            height: 100%;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-blue) rgba(255,255,255,0.05);
+        }
+        .carousel-track::-webkit-scrollbar {
+            height: 3px;
+        }
+        .carousel-track::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+            border-radius: 2px;
+        }
+        .carousel-track::-webkit-scrollbar-thumb {
+            background: var(--accent-blue);
+            border-radius: 2px;
+        }
+
+        .iw-frosted-card {
+            flex: 0 0 135px;
+            height: 108px;
+            background: rgba(12, 12, 18, 0.75);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 4px;
+            padding: 6px;
+            box-shadow: 0 12px 24px rgba(0,0,0,0.7);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+                        border-color 0.25s ease, 
+                        box-shadow 0.25s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        .iw-frosted-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-blue);
+            box-shadow: 0 16px 28px rgba(0,0,0,0.85), 0 0 18px var(--glow-blue);
+        }
+        .iw-frosted-thumb {
+            width: 100%;
+            height: 72px;
+            background: #030305;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .iw-frosted-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            filter: brightness(0.85);
+            transition: filter 0.3s ease, transform 0.3s ease;
+        }
+        .iw-frosted-card:hover .iw-frosted-thumb img {
+            filter: brightness(1.08);
+            transform: scale(1.04);
+        }
+        .iw-frosted-meta {
+            padding-top: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+        .iw-frosted-meta h4 {
+            font-size: 0.62rem;
+            font-weight: 700;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 85px;
+        }
+        .iw-frosted-meta span {
+            font-size: 0.55rem;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        /* Lightbox Focus View */
+        #hero-lightbox {
+            position: fixed;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.92);
+            max-width: 85vw;
+            max-height: 75vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 300;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1), 
+                        transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        #hero-lightbox.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .lightbox-frame {
+            background: rgba(8, 8, 12, 0.75);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(86, 156, 214, 0.5);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.95), 0 0 60px 10px var(--glow-blue);
+            border-radius: 4px;
+            padding: 16px;
+            max-height: 70vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .lightbox-frame img {
+            max-height: 65vh;
+            max-width: 80vw;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            border-radius: 2px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.85);
+        }
+
+        .lightbox-caption {
+            margin-top: 14px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #fff;
+            text-shadow: 0 0 10px var(--glow-blue);
+            font-weight: 700;
+        }
+
+        /* Lightbox Cycle Arrows */
+        .lightbox-arrow {
+            position: fixed;
+            top: 45%;
+            transform: translateY(-50%);
+            width: 48px;
+            height: 48px;
+            background: rgba(14, 14, 20, 0.85);
+            border: 1px solid rgba(86, 156, 214, 0.6);
+            border-radius: 50%;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 350;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.25s ease;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+        body.image-focus-active .lightbox-arrow {
+            opacity: 0.85;
+            pointer-events: auto;
+        }
+        .lightbox-arrow:hover {
+            opacity: 1;
+            background: var(--accent-blue);
+            color: #000;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 30px var(--glow-blue);
+            transform: translateY(-50%) scale(1.1);
+        }
+        .lightbox-prev {
+            left: calc(50% - min(42vw, 480px) - 70px);
+        }
+        .lightbox-next {
+            right: calc(50% - min(42vw, 480px) - 70px);
+        }
+
+        /* Back to Overview Button */
+        .back-to-cards {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(8, 8, 12, 0.85);
+            border: 1px solid var(--accent-blue);
+            color: #fff;
+            padding: 10px 24px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-radius: 4px;
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 350;
+            box-shadow: 0 0 25px var(--glow-blue);
+        }
+        .back-to-cards:hover {
+            background: var(--accent-blue);
+            color: #000;
+            transform: translateX(-50%) translateY(-2px);
+            box-shadow: 0 0 35px var(--glow-blue);
+        }
+        body.image-focus-active .back-to-cards {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* =======================================================
            SEQUENTIAL SPIRAL CASCADE (AEROSOL LAYERING EFFECT)
         ======================================================= */
         .spiral-cascade-container {
@@ -214,51 +544,59 @@
         /* Hover & Active Touch Expansion */
         .reel-card:hover .cascade-top-right .l1,
         .reel-card.is-playing .cascade-top-right .l1,
-        .feature-banner:hover .cascade-top-right .l1 {
+        .feature-banner:hover .cascade-top-right .l1,
+        .exhibit-card:hover .cascade-top-right .l1 {
             box-shadow: 0 0 35px var(--glow-blue);
             border-color: rgba(86, 156, 214, 0.8);
         }
         .reel-card:hover .cascade-top-right .l2,
         .reel-card.is-playing .cascade-top-right .l2,
-        .feature-banner:hover .cascade-top-right .l2 {
+        .feature-banner:hover .cascade-top-right .l2,
+        .exhibit-card:hover .cascade-top-right .l2 {
             transform: translate3d(28px, -20px, 0) scale(0.82) rotate(60deg);
             opacity: 0.85;
             box-shadow: 0 0 30px var(--glow-blue);
         }
         .reel-card:hover .cascade-top-right .l3,
         .reel-card.is-playing .cascade-top-right .l3,
-        .feature-banner:hover .cascade-top-right .l3 {
+        .feature-banner:hover .cascade-top-right .l3,
+        .exhibit-card:hover .cascade-top-right .l3 {
             transform: translate3d(50px, -36px, 0) scale(0.64) rotate(76deg);
             opacity: 0.65;
             box-shadow: 0 0 25px var(--glow-blue);
         }
         .reel-card:hover .cascade-top-right .l4,
         .reel-card.is-playing .cascade-top-right .l4,
-        .feature-banner:hover .cascade-top-right .l4 {
+        .feature-banner:hover .cascade-top-right .l4,
+        .exhibit-card:hover .cascade-top-right .l4 {
             transform: translate3d(70px, -50px, 0) scale(0.46) rotate(94deg);
             opacity: 0.45;
             box-shadow: 0 0 20px var(--glow-blue);
         }
 
         .reel-card:hover .cascade-bottom-left .l1,
-        .reel-card.is-playing .cascade-bottom-left .l1 {
+        .reel-card.is-playing .cascade-bottom-left .l1,
+        .exhibit-card:hover .cascade-bottom-left .l1 {
             box-shadow: 0 0 35px var(--glow-blue);
             border-color: rgba(86, 156, 214, 0.8);
         }
         .reel-card:hover .cascade-bottom-left .l2,
-        .reel-card.is-playing .cascade-bottom-left .l2 {
+        .reel-card.is-playing .cascade-bottom-left .l2,
+        .exhibit-card:hover .cascade-bottom-left .l2 {
             transform: translate3d(-28px, 20px, 0) scale(0.82) rotate(30deg);
             opacity: 0.85;
             box-shadow: 0 0 30px var(--glow-blue);
         }
         .reel-card:hover .cascade-bottom-left .l3,
-        .reel-card.is-playing .cascade-bottom-left .l3 {
+        .reel-card.is-playing .cascade-bottom-left .l3,
+        .exhibit-card:hover .cascade-bottom-left .l3 {
             transform: translate3d(-50px, 36px, 0) scale(0.64) rotate(14deg);
             opacity: 0.65;
             box-shadow: 0 0 25px var(--glow-blue);
         }
         .reel-card:hover .cascade-bottom-left .l4,
-        .reel-card.is-playing .cascade-bottom-left .l4 {
+        .reel-card.is-playing .cascade-bottom-left .l4,
+        .exhibit-card:hover .cascade-bottom-left .l4 {
             transform: translate3d(-70px, 50px, 0) scale(0.46) rotate(-2deg);
             opacity: 0.45;
             box-shadow: 0 0 20px var(--glow-blue);
@@ -328,7 +666,7 @@
             letter-spacing: 1px;
         }
 
-        /* Feature Film Banner */
+        /* Feature Film Banner (Styled like Finger Laced Crown) */
         .feature-banner {
             background: var(--panel-bg);
             border: 1px solid rgba(255,255,255,0.1);
@@ -382,30 +720,11 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        .btn-trailer {
-            display: inline-block;
-            padding: 16px 32px;
-            background: #fff;
-            color: #000;
-            font-size: 0.78rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 2.5px;
-            text-decoration: none;
-            text-align: center;
-            transition: all 0.25s ease;
-        }
-        .btn-trailer:hover {
-            background: var(--accent-blue);
-            color: #000;
-            box-shadow: 0 0 25px 4px var(--glow-blue);
-            transform: translateY(-2px);
-        }
         .feature-visual {
             position: relative;
             aspect-ratio: 16/9;
             width: 100%;
-            background: linear-gradient(to bottom, rgba(3,3,5,0.3), rgba(3,3,5,0.6)), url('FLC 1.jpg') center/cover no-repeat;
+            background: linear-gradient(to bottom, rgba(3,3,5,0.3), rgba(3,3,5,0.6)), url('bf 8.jpg') center/cover no-repeat;
             border-radius: 2px;
             display: flex;
             align-items: center;
@@ -414,36 +733,12 @@
             border: 1px solid rgba(255,255,255,0.15);
             overflow: hidden;
             z-index: 2;
+            cursor: pointer;
             transition: transform 0.4s ease, border-color 0.4s ease;
         }
         .feature-visual:hover {
             transform: scale(1.02);
             border-color: var(--accent-blue);
-        }
-        .play-button {
-            width: 64px;
-            height: 64px;
-            background: rgba(86, 156, 214, 0.9);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 30px var(--glow);
-            transition: all 0.3s ease;
-        }
-        .feature-visual:hover .play-button {
-            transform: scale(1.1);
-            background: var(--accent-blue);
-            box-shadow: 0 0 35px var(--glow-blue);
-        }
-        .play-button::after {
-            content: '';
-            width: 0;
-            height: 0;
-            border-top: 10px solid transparent;
-            border-bottom: 10px solid transparent;
-            border-left: 16px solid #fff;
-            margin-left: 4px;
         }
 
         /* Footer */
@@ -525,7 +820,6 @@
                 margin-bottom: 16px;
             }
 
-            /* Scale down spiral frames so rotated edges stay inside mobile viewport */
             .spiral-cascade-container {
                 width: 110px;
                 height: 110px;
@@ -569,10 +863,6 @@
                 font-size: 0.84rem;
                 margin-bottom: 20px;
             }
-            .btn-trailer {
-                width: 100%;
-                padding: 15px 20px;
-            }
 
             footer {
                 padding: 40px 20px calc(40px + env(safe-area-inset-bottom, 0px)) 20px;
@@ -582,6 +872,17 @@
     </style>
 </head>
 <body>
+
+    <!-- Enlarged Lightbox View -->
+    <div id="hero-lightbox" style="position: fixed; top: 45%; left: 50%; transform: translate(-50%, -50%) scale(0.92); max-width: 85vw; max-height: 75vh; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 300; opacity: 0; pointer-events: none; transition: opacity 0.5s cubic-bezier(0.19, 1, 0.22, 1), transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);">
+        <div class="lightbox-arrow lightbox-prev" onclick="cycleLightbox(-1, event)" style="position: fixed; top: 45%; transform: translateY(-50%); left: calc(50% - min(42vw, 480px) - 70px); width: 48px; height: 48px; background: rgba(14, 14, 20, 0.85); border: 1px solid rgba(86, 156, 214, 0.6); border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; z-index: 350; opacity: 0.85; transition: all 0.25s ease;">‹</div>
+        <div class="lightbox-frame" onclick="closeHeroLightbox(event)" style="background: rgba(8, 8, 12, 0.75); backdrop-filter: blur(14px); border: 1px solid rgba(86, 156, 214, 0.5); box-shadow: 0 40px 100px rgba(0,0,0,0.95), 0 0 60px 10px var(--glow-blue); border-radius: 4px; padding: 16px; max-height: 70vh; display: flex; justify-content: center; align-items: center; cursor: pointer; position: relative;">
+            <img id="lightbox-img" src="" alt="Enlarged Focus View" style="max-height: 65vh; max-width: 80vw; width: auto; height: auto; object-fit: contain; display: block; border-radius: 2px;">
+        </div>
+        <div class="lightbox-arrow lightbox-next" onclick="cycleLightbox(1, event)" style="position: fixed; top: 45%; transform: translateY(-50%); right: calc(50% - min(42vw, 480px) - 70px); width: 48px; height: 48px; background: rgba(14, 14, 20, 0.85); border: 1px solid rgba(86, 156, 214, 0.6); border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; z-index: 350; opacity: 0.85; transition: all 0.25s ease;">›</div>
+        <div class="lightbox-caption" id="lightbox-caption" style="margin-top: 14px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 3px; color: #fff; text-shadow: 0 0 10px var(--glow-blue); font-weight: 700;"></div>
+    </div>
+    <div class="back-to-cards" onclick="closeHeroLightbox(event)">✕ Back to Overview</div>
 
     <!-- MINIMALIST FLOATING HEADER -->
     <nav>
@@ -603,7 +904,7 @@
 
         <!-- Row 1: Reels 1 to 5 -->
         <div class="journal-row">
-            <!-- Reel 1 (Top-Right Spiral) -->
+            <!-- Reel 1 -->
             <div class="reel-card">
                 <div class="spiral-cascade-container cascade-top-right">
                     <div class="cascade-layer l1"></div>
@@ -622,7 +923,7 @@
                 </div>
             </div>
 
-            <!-- Reel 2 (Bottom-Left Spiral) -->
+            <!-- Reel 2 -->
             <div class="reel-card">
                 <div class="spiral-cascade-container cascade-bottom-left">
                     <div class="cascade-layer l1"></div>
@@ -641,7 +942,7 @@
                 </div>
             </div>
 
-            <!-- Reel 3 (Top-Right Spiral) -->
+            <!-- Reel 3 -->
             <div class="reel-card">
                 <div class="spiral-cascade-container cascade-top-right">
                     <div class="cascade-layer l1"></div>
@@ -660,7 +961,7 @@
                 </div>
             </div>
 
-            <!-- Reel 4 (Bottom-Left Spiral) -->
+            <!-- Reel 4 -->
             <div class="reel-card">
                 <div class="spiral-cascade-container cascade-bottom-left">
                     <div class="cascade-layer l1"></div>
@@ -679,7 +980,7 @@
                 </div>
             </div>
 
-            <!-- Reel 5 (Top-Right Spiral) -->
+            <!-- Reel 5 -->
             <div class="reel-card">
                 <div class="spiral-cascade-container cascade-top-right">
                     <div class="cascade-layer l1"></div>
@@ -701,7 +1002,7 @@
 
         <!-- Row 2: Reels 6 to 10 -->
         <div class="journal-row">
-            <!-- Reel 6 (Bottom-Left Spiral) -->
+            <!-- Reel 6 -->
             <div class="reel-card">
                 <div class="spiral-cascade-container cascade-bottom-left">
                     <div class="cascade-layer l1"></div>
@@ -720,7 +1021,7 @@
                 </div>
             </div>
 
-            <!-- Reel 7 (Top-Right Spiral) -->
+            <!-- Reel 7 -->
             <div class="reel-card">
                 <div class="spiral-cascade-container cascade-top-right">
                     <div class="cascade-layer l1"></div>
@@ -739,7 +1040,7 @@
                 </div>
             </div>
 
-            <!-- Reel 8 (Bottom-Left Spiral) -->
+            <!-- Reel 8 -->
             <div class="reel-card">
                 <div class="spiral-cascade-container cascade-bottom-left">
                     <div class="cascade-layer l1"></div>
@@ -758,7 +1059,7 @@
                 </div>
             </div>
 
-            <!-- Reel 9 (Top-Right Spiral) -->
+            <!-- Reel 9 -->
             <div class="reel-card">
                 <div class="spiral-cascade-container cascade-top-right">
                     <div class="cascade-layer l1"></div>
@@ -777,7 +1078,7 @@
                 </div>
             </div>
 
-            <!-- Reel 10 (Bottom-Left Spiral) -->
+            <!-- Reel 10 -->
             <div class="reel-card">
                 <div class="spiral-cascade-container cascade-bottom-left">
                     <div class="cascade-layer l1"></div>
@@ -797,8 +1098,57 @@
             </div>
         </div>
 
-        <!-- Feature Film Production Spotlight -->
-        <div class="feature-banner">
+        <!-- NEW SECTION: Banana Factory, Resident Artist (Exhibitions Style with Carousel & Lightbox) -->
+        <div class="exhibit-card-wrapper">
+            <div class="spiral-cascade-container cascade-bottom-left">
+                <div class="cascade-layer l1"></div>
+                <div class="cascade-layer l2"></div>
+            </div>
+            <div class="exhibit-card">
+                <div class="exhibit-year">Residency</div>
+                <div class="exhibit-content">
+                    <h3>Banana Factory, Resident Artist</h3>
+                    <p>Studio residency and creative workspace documentation.</p>
+                </div>
+            </div>
+            <div class="scrapbook-drawer">
+                <div class="carousel-arrow" onclick="scrollCarousel(this, -1)">‹</div>
+                <div class="carousel-track">
+                    <div class="iw-frosted-card" onclick="openHeroLightbox('bf 1.jpg', 'Banana Factory Resident Artist • Plate 01', this)">
+                        <div class="iw-frosted-thumb"><img src="bf 1.jpg" alt="Banana Factory 1"></div>
+                        <div class="iw-frosted-meta"><h4>Studio View 1</h4><span>01</span></div>
+                    </div>
+                    <div class="iw-frosted-card" onclick="openHeroLightbox('bf 2.jpg', 'Banana Factory Resident Artist • Plate 02', this)">
+                        <div class="iw-frosted-thumb"><img src="bf 2.jpg" alt="Banana Factory 2"></div>
+                        <div class="iw-frosted-meta"><h4>Studio View 2</h4><span>02</span></div>
+                    </div>
+                    <div class="iw-frosted-card" onclick="openHeroLightbox('bf 3.jpg', 'Banana Factory Resident Artist • Plate 03', this)">
+                        <div class="iw-frosted-thumb"><img src="bf 3.jpg" alt="Banana Factory 3"></div>
+                        <div class="iw-frosted-meta"><h4>Workspace</h4><span>03</span></div>
+                    </div>
+                    <div class="iw-frosted-card" onclick="openHeroLightbox('bf 4.jpg', 'Banana Factory Resident Artist • Plate 04', this)">
+                        <div class="iw-frosted-thumb"><img src="bf 4.jpg" alt="Banana Factory 4"></div>
+                        <div class="iw-frosted-meta"><h4>Creation Pass</h4><span>04</span></div>
+                    </div>
+                    <div class="iw-frosted-card" onclick="openHeroLightbox('bf 5.jpg', 'Banana Factory Resident Artist • Plate 05', this)">
+                        <div class="iw-frosted-thumb"><img src="bf 5.jpg" alt="Banana Factory 5"></div>
+                        <div class="iw-frosted-meta"><h4>Studio Space</h4><span>05</span></div>
+                    </div>
+                    <div class="iw-frosted-card" onclick="openHeroLightbox('bf 6.jpg', 'Banana Factory Resident Artist • Plate 06', this)">
+                        <div class="iw-frosted-thumb"><img src="bf 6.jpg" alt="Banana Factory 6"></div>
+                        <div class="iw-frosted-meta"><h4>Artist Talk</h4><span>06</span></div>
+                    </div>
+                    <div class="iw-frosted-card" onclick="openHeroLightbox('bf 7.jpg', 'Banana Factory Resident Artist • Plate 07', this)">
+                        <div class="iw-frosted-thumb"><img src="bf 7.jpg" alt="Banana Factory 7"></div>
+                        <div class="iw-frosted-meta"><h4>Residency Final</h4><span>07</span></div>
+                    </div>
+                </div>
+                <div class="carousel-arrow" onclick="scrollCarousel(this, 1)">›</div>
+            </div>
+        </div>
+
+        <!-- Feature Film Production Spotlight (Finger Laced Crown with bf 8.jpg) -->
+        <div class="feature-banner" style="background: linear-gradient(to bottom, rgba(3,3,5,0.4), rgba(3,3,5,0.8)), url('bf 8.jpg') center/cover no-repeat;">
             <div class="spiral-cascade-container cascade-top-right feature-spiral">
                 <div class="cascade-layer l1"></div>
                 <div class="cascade-layer l2"></div>
@@ -810,10 +1160,10 @@
                 <span>Feature Film Production</span>
                 <h2>Finger Laced Crown</h2>
                 <p>Exploring 14 years of aerosol atmospheric realism, early tokenized digital art, and Navigating the high-wire act of feature film production.</p>
-                <a href="https://youtu.be/-cBZcOsQSD8" target="_blank" class="btn-trailer">Watch Official Trailer</a>
+                <a href="https://youtu.be/-cBZcOsQSD8" target="_blank" class="btn-trailer" style="display: inline-block; padding: 16px 32px; background: #fff; color: #000; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2.5px; text-decoration: none; text-align: center; transition: all 0.25s ease;">Watch Official Trailer</a>
             </div>
-            <a href="https://youtu.be/-cBZcOsQSD8" target="_blank" class="feature-visual">
-                <div class="play-button"></div>
+            <a href="https://youtu.be/-cBZcOsQSD8" target="_blank" class="feature-visual" style="background: url('bf 8.jpg') center/cover no-repeat;">
+                <div class="play-button" style="width: 64px; height: 64px; background: rgba(86, 156, 214, 0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 30px var(--glow);"></div>
             </a>
         </div>
     </main>
@@ -823,43 +1173,93 @@
     </footer>
 
     <script>
-        document.querySelectorAll('.reel-card').forEach(card => {
-            const video = card.querySelector('video');
+        const heroLightbox = document.getElementById('hero-lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxCaption = document.getElementById('lightbox-caption');
 
-            // Desktop hover behavior
-            card.addEventListener('mouseenter', () => {
-                if (window.matchMedia('(hover: hover)').matches) {
-                    video.play().catch(() => {});
+        let activeGalleryCards = [];
+        let currentLightboxIndex = 0;
+
+        function scrollCarousel(buttonElement, direction) {
+            const container = buttonElement.closest('.scrapbook-drawer');
+            const track = container.querySelector('.carousel-track');
+            const scrollDistance = 220;
+            track.scrollBy({ left: direction * scrollDistance, behavior: 'smooth' });
+        }
+
+        function openHeroLightbox(src, caption, cardElement) {
+            lightboxImg.src = src;
+            lightboxCaption.textContent = caption || '';
+            heroLightbox.classList.add('active');
+            document.body.classList.add('image-focus-active');
+
+            if (cardElement) {
+                const drawer = cardElement.closest('.scrapbook-drawer');
+                if (drawer) {
+                    activeGalleryCards = Array.from(drawer.querySelectorAll('.iw-frosted-card'));
+                    currentLightboxIndex = activeGalleryCards.indexOf(cardElement);
                 }
-            });
+            }
+        }
 
-            card.addEventListener('mouseleave', () => {
-                if (window.matchMedia('(hover: hover)').matches) {
-                    video.pause();
-                    video.currentTime = 0;
-                    card.classList.remove('is-playing');
-                }
-            });
+        function cycleLightbox(direction, event) {
+            if (event) event.stopPropagation();
+            if (!activeGalleryCards.length) return;
 
-            // Mobile & Click toggle behavior (pauses other reels when one is tapped)
-            card.addEventListener('click', () => {
-                const isPaused = video.paused;
+            currentLightboxIndex = (currentLightboxIndex + direction + activeGalleryCards.length) % activeGalleryCards.length;
+            const targetCard = activeGalleryCards[currentLightboxIndex];
+            
+            const onclickAttr = targetCard.getAttribute('onclick');
+            const match = onclickAttr.match(/openHeroLightbox\('(.*?)',\s*'(.*?)'/);
+            if (match) {
+                lightboxImg.src = match[1];
+                lightboxCaption.textContent = match[2];
+            }
+        }
 
-                document.querySelectorAll('.reel-card').forEach(otherCard => {
-                    const otherVideo = otherCard.querySelector('video');
-                    if (otherCard !== card && !otherVideo.paused) {
-                        otherVideo.pause();
-                        otherCard.classList.remove('is-playing');
+        function closeHeroLightbox(event) {
+            if (event) event.stopPropagation();
+            heroLightbox.classList.remove('active');
+            document.body.classList.remove('image-focus-active');
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll('.reel-card').forEach(card => {
+                const video = card.querySelector('video');
+
+                card.addEventListener('mouseenter', () => {
+                    if (window.matchMedia('(hover: hover)').matches) {
+                        video.play().catch(() => {});
                     }
                 });
 
-                if (isPaused) {
-                    video.play().catch(() => {});
-                    card.classList.add('is-playing');
-                } else {
-                    video.pause();
-                    card.classList.remove('is-playing');
-                }
+                card.addEventListener('mouseleave', () => {
+                    if (window.matchMedia('(hover: hover)').matches) {
+                        video.pause();
+                        video.currentTime = 0;
+                        card.classList.remove('is-playing');
+                    }
+                });
+
+                card.addEventListener('click', () => {
+                    const isPaused = video.paused;
+
+                    document.querySelectorAll('.reel-card').forEach(otherCard => {
+                        const otherVideo = otherCard.querySelector('video');
+                        if (otherCard !== card && !otherVideo.paused) {
+                            otherVideo.pause();
+                            otherCard.classList.remove('is-playing');
+                        }
+                    });
+
+                    if (isPaused) {
+                        video.play().catch(() => {});
+                        card.classList.add('is-playing');
+                    } else {
+                        video.pause();
+                        card.classList.remove('is-playing');
+                    }
+                });
             });
         });
     </script>
