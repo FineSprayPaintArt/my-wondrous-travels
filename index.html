@@ -1483,6 +1483,53 @@
       </div>
     </section>
 
+    <!-- WORK 15: SWEETEST GOODBYE -->
+    <section class="work-section" id="piece-15">
+      <div class="work-Split">
+        <div class="artwork-frame" id="sweetFrame">
+          <div class="spiral-cascade-container cascade-top-right">
+            <div class="cascade-layer l1"></div>
+            <div class="cascade-layer l2"></div>
+            <div class="cascade-layer l3"></div>
+            <div class="cascade-layer l4"></div>
+          </div>
+
+          <div class="artwork-image-container" id="sweetCanvas">
+            <div class="view-layer active">
+              <img src="sweet 4.jpg" alt="Sweetest Goodbye Latest Pass">
+            </div>
+            <div class="view-layer">
+              <img src="sweet 4.jpg" alt="Sweetest Goodbye Buffer">
+            </div>
+            <div class="hover-hint">Tap or hover deck to shift</div>
+          </div>
+          <div class="evolution-deck">
+            <div class="evolution-header">
+              <span>Studio Evolution Deck</span>
+              <span id="sweetStageText" class="stage-indicator">Latest Pass (Pass 4)</span>
+            </div>
+            <div class="evolution-filmstrip" id="sweetFilmstrip">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <div class="editorial-copy">
+          <div class="index-tag">Work 15 • My Wondrous Travels Collection</div>
+          <h2>Sweetest Goodbye</h2>
+          <p>
+            An atmospheric landscape crafted entirely through layered aerosol mist, capturing transition, lingering light, and quiet departure.
+          </p>
+          <div class="final-specs">
+            Custom Framing Available
+          </div>
+          <div class="cta-row">
+            <a href="mailto:finespraypaintart@gmail.com?subject=Inquire%20About%20Original%20-%20Sweetest%20Goodbye" class="btn-gsp btn-ghost">Inquire about original</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- INFINITE WORLDS MAGAZINE SHOWCASE -->
     <section class="iw-section" id="infinite-worlds">
       <div class="iw-watermark-bg">
@@ -1629,6 +1676,13 @@
       { src: "prim 4.jpg", label: "Pass 4" },
       { src: "prim 5.jpg", label: "Pass 5" },
       { src: "prim 6.jpg", label: "Latest Pass (Pass 6)" }
+    ];
+
+    const sweetPhotos = [
+      { src: "sweet 1.jpg", label: "Pass 1" },
+      { src: "sweet 2.jpg", label: "Pass 2" },
+      { src: "sweet 3.jpg", label: "Pass 3" },
+      { src: "sweet 4.jpg", label: "Latest Pass (Pass 4)" }
     ];
 
     const iwIssues = [
@@ -1863,6 +1917,14 @@
         labelId: 'primStageText',
         photos: primPhotos,
         initialIndex: 5
+      });
+
+      setupController({
+        canvasId: 'sweetCanvas',
+        filmstripId: 'sweetFilmstrip',
+        labelId: 'sweetStageText',
+        photos: sweetPhotos,
+        initialIndex: 3
       });
 
       setupIwController();
