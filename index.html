@@ -1436,6 +1436,53 @@
       </div>
     </section>
 
+    <!-- WORK 14: PRIMROSE PATH -->
+    <section class="work-section" id="piece-14">
+      <div class="work-Split">
+        <div class="artwork-frame" id="primFrame">
+          <div class="spiral-cascade-container cascade-bottom-left">
+            <div class="cascade-layer l1"></div>
+            <div class="cascade-layer l2"></div>
+            <div class="cascade-layer l3"></div>
+            <div class="cascade-layer l4"></div>
+          </div>
+
+          <div class="artwork-image-container" id="primCanvas">
+            <div class="view-layer active">
+              <img src="prim 6.jpg" alt="Primrose Path Latest Pass">
+            </div>
+            <div class="view-layer">
+              <img src="prim 6.jpg" alt="Primrose Path Buffer">
+            </div>
+            <div class="hover-hint">Tap or hover deck to shift</div>
+          </div>
+          <div class="evolution-deck">
+            <div class="evolution-header">
+              <span>Studio Evolution Deck</span>
+              <span id="primStageText" class="stage-indicator">Latest Pass (Pass 6)</span>
+            </div>
+            <div class="evolution-filmstrip" id="primFilmstrip">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <div class="editorial-copy">
+          <div class="index-tag">Work 14 • My Wondrous Travels Collection</div>
+          <h2>Primrose Path</h2>
+          <p>
+            Commissioned for Infinite Worlds Magazine Issue #8. Built through multi-layered aerosol mist to capture an atmospheric landscape unfolding along a luminous pathway.
+          </p>
+          <div class="final-specs">
+            Custom Framing Available
+          </div>
+          <div class="cta-row">
+            <a href="mailto:finespraypaintart@gmail.com?subject=Inquire%20About%20Original%20-%20Primrose%20Path" class="btn-gsp btn-ghost">Inquire about original</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- INFINITE WORLDS MAGAZINE SHOWCASE -->
     <section class="iw-section" id="infinite-worlds">
       <div class="iw-watermark-bg">
@@ -1575,6 +1622,15 @@
       { src: "hs 5.jpg", label: "Latest Pass (Pass 5)" }
     ];
 
+    const primPhotos = [
+      { src: "prim 1.jpg", label: "Pass 1" },
+      { src: "prim 2.jpg", label: "Pass 2" },
+      { src: "prim 3.jpg", label: "Pass 3" },
+      { src: "prim 4.jpg", label: "Pass 4" },
+      { src: "prim 5.jpg", label: "Pass 5" },
+      { src: "prim 6.jpg", label: "Latest Pass (Pass 6)" }
+    ];
+
     const iwIssues = [
       {
         id: "2",
@@ -1597,7 +1653,7 @@
       {
         id: "8",
         label: "Issue #8 • July 2021",
-        paint: "issue 8 paint.jpg",
+        paint: "prim 6.jpg",
         cover: "issue 8.jpg"
       },
       {
@@ -1799,6 +1855,14 @@
         labelId: 'harborStageText',
         photos: harborPhotos,
         initialIndex: 4
+      });
+
+      setupController({
+        canvasId: 'primCanvas',
+        filmstripId: 'primFilmstrip',
+        labelId: 'primStageText',
+        photos: primPhotos,
+        initialIndex: 5
       });
 
       setupIwController();
