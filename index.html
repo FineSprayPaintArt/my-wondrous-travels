@@ -155,6 +155,33 @@
       letter-spacing: 0.5px;
       white-space: nowrap;
     }
+    .ig-follow-link {
+      position: absolute;
+      bottom: calc(32px + env(safe-area-inset-bottom, 0px));
+      right: 36px;
+      z-index: 4;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #ffffff;
+      text-decoration: none;
+      opacity: 0.85;
+      padding: 8px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(1, 1, 3, 0.65);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 3px;
+      transition: all 0.3s ease;
+    }
+    .ig-follow-link:hover {
+      opacity: 1;
+      color: var(--accent-blue);
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 18px var(--glow-blue);
+      text-shadow: 0 0 10px var(--glow-blue);
+    }
     .scroll-indicator {
       position: absolute;
       bottom: calc(32px + env(safe-area-inset-bottom, 0px));
@@ -975,6 +1002,16 @@
         font-size: 0.95rem;
         max-width: 90%;
       }
+      .ig-follow-link {
+        right: 20px;
+        bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+        font-size: 0.65rem;
+        letter-spacing: 1.5px;
+        padding: 7px 11px;
+      }
+      .scroll-indicator {
+        bottom: calc(64px + env(safe-area-inset-bottom, 0px));
+      }
 
       .work-section {
         padding: 84px 20px 72px 20px;
@@ -1102,6 +1139,8 @@
     </div>
 
     <a href="#piece-06" class="scroll-indicator">Scroll Collection ↓</a>
+
+    <a href="https://www.instagram.com/fine_spray_paint_art/" target="_blank" rel="noopener noreferrer" class="ig-follow-link">IG Follow @Fine_Spray_PaintArt</a>
   </header>
 
   <main id="works">
