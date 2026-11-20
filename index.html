@@ -1496,10 +1496,10 @@
 
           <div class="artwork-image-container" id="sweetCanvas">
             <div class="view-layer active">
-              <img src="sweet 4.JPG" alt="Sweetest Goodbye Latest Pass">
+              <img src="sweet 4.jpg" alt="Sweetest Goodbye Latest Pass">
             </div>
             <div class="view-layer">
-              <img src="sweet 4.JPG" alt="Sweetest Goodbye Buffer">
+              <img src="sweet 4.jpg" alt="Sweetest Goodbye Buffer">
             </div>
             <div class="hover-hint">Tap or hover deck to shift</div>
           </div>
@@ -1525,6 +1525,53 @@
           </div>
           <div class="cta-row">
             <a href="mailto:finespraypaintart@gmail.com?subject=Inquire%20About%20Original%20-%20Sweetest%20Goodbye" class="btn-gsp btn-ghost">Inquire about original</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORK 16: SECRET SPOT -->
+    <section class="work-section" id="piece-16">
+      <div class="work-Split">
+        <div class="artwork-frame" id="secretFrame">
+          <div class="spiral-cascade-container cascade-bottom-left">
+            <div class="cascade-layer l1"></div>
+            <div class="cascade-layer l2"></div>
+            <div class="cascade-layer l3"></div>
+            <div class="cascade-layer l4"></div>
+          </div>
+
+          <div class="artwork-image-container" id="secretCanvas">
+            <div class="view-layer active">
+              <img src="sp 5.jpg" alt="Secret Spot Latest Pass">
+            </div>
+            <div class="view-layer">
+              <img src="sp 5.jpg" alt="Secret Spot Buffer">
+            </div>
+            <div class="hover-hint">Tap or hover deck to shift</div>
+          </div>
+          <div class="evolution-deck">
+            <div class="evolution-header">
+              <span>Studio Evolution Deck</span>
+              <span id="secretStageText" class="stage-indicator">Latest Pass (Pass 5)</span>
+            </div>
+            <div class="evolution-filmstrip" id="secretFilmstrip">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <div class="editorial-copy">
+          <div class="index-tag">Work 16 • My Wondrous Travels Collection</div>
+          <h2>Secret Spot</h2>
+          <p>
+            Painted using only black and white spray paint except for a mishap of red—which is why I signed it in red.
+          </p>
+          <div class="final-specs">
+            Custom Framing Available
+          </div>
+          <div class="cta-row">
+            <a href="mailto:finespraypaintart@gmail.com?subject=Inquire%20About%20Original%20-%20Secret%20Spot" class="btn-gsp btn-ghost">Inquire about original</a>
           </div>
         </div>
       </div>
@@ -1634,7 +1681,7 @@
     const quietPhotos = [
       { src: "quiet 1.jpg", label: "Pass 1" },
       { src: "quiet 2.jpg", label: "Pass 2" },
-      { src: "quiet 3.jpg", label: "Final (Pass 3)" }
+      { src: "quiet 3.jpg", label: "Latest Pass (Pass 3)" }
     ];
 
     const infernoPhotos = [
@@ -1642,7 +1689,7 @@
       { src: "inferno 2.jpg", label: "Pass 2" },
       { src: "inferno 3.jpg", label: "Pass 3" },
       { src: "inferno 4.jpg", label: "Pass 4" },
-      { src: "inferno 5.jpg", label: "Final (Pass 5)" }
+      { src: "inferno 5.jpg", label: "Latest Pass (Pass 5)" }
     ];
 
     const gemPhotos = [
@@ -1650,7 +1697,7 @@
       { src: "gem 2.jpg", label: "Pass 2" },
       { src: "gem 3.jpg", label: "Pass 3" },
       { src: "gem 4.jpg", label: "Pass 4" },
-      { src: "gem 5.jpg", label: "Final (Pass 5)" }
+      { src: "gem 5.jpg", label: "Latest Pass (Pass 5)" }
     ];
 
     const fsPhotos = [
@@ -1658,7 +1705,7 @@
       { src: "fs 2.jpg", label: "Pass 2" },
       { src: "fs 3.jpg", label: "Pass 3" },
       { src: "fs 4.jpg", label: "Pass 4" },
-      { src: "fs 5.jpg", label: "Final (Pass 5)" }
+      { src: "fs 5.jpg", label: "Latest Pass (Pass 5)" }
     ];
 
     const harborPhotos = [
@@ -1679,10 +1726,18 @@
     ];
 
     const sweetPhotos = [
-      { src: "sweet 1.JPG", label: "Pass 1" },
-      { src: "sweet 2.JPG", label: "Pass 2" },
+      { src: "sweet 1.jpg", label: "Pass 1" },
+      { src: "sweet 2.jpg", label: "Pass 2" },
       { src: "sweet 3.jpg", label: "Pass 3" },
-      { src: "sweet 4.JPG", label: "Final (Pass 4)" }
+      { src: "sweet 4.jpg", label: "Latest Pass (Pass 4)" }
+    ];
+
+    const secretPhotos = [
+      { src: "sp 1.jpg", label: "Pass 1" },
+      { src: "sp 2.jpg", label: "Pass 2" },
+      { src: "sp 3.jpg", label: "Pass 3" },
+      { src: "sp 4.jpg", label: "Pass 4" },
+      { src: "sp 5.jpg", label: "Latest Pass (Pass 5)" }
     ];
 
     const iwIssues = [
@@ -1925,6 +1980,14 @@
         labelId: 'sweetStageText',
         photos: sweetPhotos,
         initialIndex: 3
+      });
+
+      setupController({
+        canvasId: 'secretCanvas',
+        filmstripId: 'secretFilmstrip',
+        labelId: 'secretStageText',
+        photos: secretPhotos,
+        initialIndex: 4
       });
 
       setupIwController();
