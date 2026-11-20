@@ -1078,12 +1078,12 @@
 
   <!-- MINIMALIST FLOATING HEADER -->
   <nav>
-    <a href="index.html" class="brand-mark">My Wondrous Travels</a>
+    <a href="https://finespraypaintart.github.io/my-wondrous-travels/index.html" class="brand-mark">My Wondrous Travels</a>
     <div class="nav-links">
-      <a href="index.html" style="color: var(--accent-blue);">Collection</a>
-      <a href="journal.html">Studio Journal</a>
-      <a href="exhibitions.html">Exhibitions</a>
-      <a href="virtual-gallery.html">Virtual Gallery</a>
+      <a href="https://finespraypaintart.github.io/my-wondrous-travels/index.html" style="color: var(--accent-blue);">Collection</a>
+      <a href="https://finespraypaintart.github.io/my-wondrous-travels/journal.html">Studio Journal</a>
+      <a href="https://finespraypaintart.github.io/my-wondrous-travels/exhibitions.html">Exhibitions</a>
+      <a href="https://finespraypaintart.github.io/my-wondrous-travels/virtual-gallery.html">Virtual Gallery</a>
       <a href="https://www.saatchiart.com/finespraypaintart" target="_blank">Buy Prints</a>
     </div>
   </nav>
@@ -1101,10 +1101,57 @@
       <p>Pioneering atmospheric realism entirely with cans of spray paint.</p>
     </div>
 
-    <a href="#piece-07" class="scroll-indicator">Scroll Collection ↓</a>
+    <a href="#piece-06" class="scroll-indicator">Scroll Collection ↓</a>
   </header>
 
   <main id="works">
+
+    <!-- WORK 06: PSYCHIC POLLUTION -->
+    <section class="work-section" id="piece-06">
+      <div class="work-Split">
+        <div class="artwork-frame" id="psychicFrame">
+          <div class="spiral-cascade-container cascade-bottom-left">
+            <div class="cascade-layer l1"></div>
+            <div class="cascade-layer l2"></div>
+            <div class="cascade-layer l3"></div>
+            <div class="cascade-layer l4"></div>
+          </div>
+
+          <div class="artwork-image-container" id="psychicCanvas">
+            <div class="view-layer active">
+              <img src="psychic 6.jpg" alt="Psychic Pollution Latest Pass">
+            </div>
+            <div class="view-layer">
+              <img src="psychic 6.jpg" alt="Psychic Pollution Buffer">
+            </div>
+            <div class="hover-hint">Tap or hover deck to shift</div>
+          </div>
+          <div class="evolution-deck">
+            <div class="evolution-header">
+              <span>Studio Evolution Deck</span>
+              <span id="psychicStageText" class="stage-indicator">Latest Pass (Pass 6)</span>
+            </div>
+            <div class="evolution-filmstrip" id="psychicFilmstrip">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <div class="editorial-copy">
+          <div class="index-tag">Work 06 • My Wondrous Travels Collection</div>
+          <h2>Psychic Pollution</h2>
+          <p>
+            Inspired by a song by Tricky, this remains the most technically difficult painting I have ever created—built across 70+ layers of spray paint with total aerosol precision.
+          </p>
+          <div class="final-specs">
+            70+ Layers • Custom Framing Available
+          </div>
+          <div class="cta-row">
+            <a href="mailto:finespraypaintart@gmail.com?subject=Inquire%20About%20Original%20-%20Psychic%20Pollution" class="btn-gsp btn-ghost">Inquire about original</a>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- WORK 07: FANTASY LORAIN -->
     <section class="work-section" id="piece-07">
@@ -1656,6 +1703,15 @@
   </footer>
 
   <script>
+    const psychicPhotos = [
+      { src: "psychic 1.jpg", label: "Pass 1" },
+      { src: "psychic 2.jpg", label: "Pass 2" },
+      { src: "psychic 3.jpg", label: "Pass 3" },
+      { src: "psychic 4.jpg", label: "Pass 4" },
+      { src: "psychic 5.jpg", label: "Pass 5" },
+      { src: "psychic 6.jpg", label: "Latest Pass (Pass 6)" }
+    ];
+
     const lorainPhotos = [
       { src: "number 9.jpg", label: "Session 1" },
       { src: "number 10.jpg", label: "Session 2" },
@@ -1910,6 +1966,14 @@
     }
 
     document.addEventListener("DOMContentLoaded", () => {
+      setupController({
+        canvasId: 'psychicCanvas',
+        filmstripId: 'psychicFilmstrip',
+        labelId: 'psychicStageText',
+        photos: psychicPhotos,
+        initialIndex: 5
+      });
+
       setupController({
         canvasId: 'lorainCanvas',
         filmstripId: 'lorainFilmstrip',
